@@ -29,3 +29,8 @@
   - **TailAA_counts**: Total counts of amino acids in the extended tail
   - **20 amino acids counts**: Counts of each of the 20 amino acids in the extended tail
 
+# Data download
+TAILVAR scores for all possible single nucleotide substitutions are available at:
+
+# Citation
+Jihoon G. Yoon. Integrating protein context to improve the pathogenicity prediction for stop-lost variants.
