@@ -2,7 +2,8 @@
 😊 Welcome to the **TAILVAR** repository, home to the codebase for developing the TAILVAR score. 🚀 **TAILVAR** is a predictive tool designed to assess the functional impact of stop-lost variants that occur at stop 🛑 codons (TAA, TGA, TAG).
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of stop-lost variants. The model leverages a combination of in-silico scores, transcript features, and protein context information. The TAILVAR score ranges from 0 to 1, representing the probability of a variant being pathogenic.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-lost variants**. The model leverages a combination of in-silico scores, transcript features, and protein context information. The TAILVAR score ranges from 0 to 1, representing the probability of a variant being pathogenic.
+![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 ## Key components
 
