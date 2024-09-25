@@ -2,23 +2,23 @@
 😊 Welcome to the **TAILVAR** repository, home to the codebase for developing the TAILVAR score. 🚀 **TAILVAR** is a predictive tool designed to assess the functional impact of stop-lost variants that occur at stop 🛑 codons (TAA, TGA, TAG).
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-lost variants**. The model leverages a combination of in-silico scores, transcript features, and protein context information. The TAILVAR score ranges from 0 to 1, representing the probability of a variant being pathogenic.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-lost variants**. By integrating a combination of in-silico prediction scores, transcript features, and protein context information, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic.
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 ## Key components
 
 - **Functional prediction scores**:
-  - **CADD** (Combined Annotation Dependent Depletion): http://cadd.gs.washington.edu/
-  - **DANN** (Deleterious Annotation of genetic variants using Neural Networks): https://cbcl.ics.uci.edu/public_data/DANN/
-  - **FATHMM** (Functional Analysis through Hidden Markov Models): http://fathmm.biocompute.org.uk/fathmmMKL.htm
-  - **Eigen**: http://www.columbia.edu/~ii2135/eigen.html
-  - **BayesDel_addAF**, **BayesDel_noAF** (Bayesian Deleteriousness score with/without allele frequency): http://fengbj-laboratory.org/BayesDel/BayesDel.html
-  - **integrated_fitCons** (Integrated Fitness Consequence Score): DOI: 10.1038/ng.3196
+  - **[CADD](http://cadd.gs.washington.edu/)** (Combined Annotation Dependent Depletion)
+  - **[DANN](https://cbcl.ics.uci.edu/public_data/DANN/)** (Deleterious Annotation of genetic variants using Neural Networks)
+  - **[FATHMM](http://fathmm.biocompute.org.uk/fathmmMKL.htm)** (Functional Analysis through Hidden Markov Models)
+  - **[Eigen](http://www.columbia.edu/~ii2135/eigen.html)**
+  - **[BayesDel_addAF, BayesDel_noAF](http://fengbj-laboratory.org/BayesDel/BayesDel.html)** (Bayesian Deleteriousness score with/without allele frequency)
+  - **[integrated_fitCons](https://www.nature.com/articles/ng.3196)** (Integrated Fitness Consequence Score)
 
 - **Conservation scores**:
-  - **GERP** (Genomic Evolutionary Rate Profiling): http://mendel.stanford.edu/SidowLab/downloads/gerp/
-  - **phyloP100way** (Phylogenetic P-value across 100 vertebrates): http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/
-  - **phastCons100way** (Phylogenetic Conserved Elements across 100 vertebrates): http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/
+  - **[GERP](http://mendel.stanford.edu/SidowLab/downloads/gerp/)** (Genomic Evolutionary Rate Profiling)
+  - **[phyloP100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/)** (Phylogenetic P-value across 100 vertebrates)
+  - **[phastCons100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/)** (Phylogenetic Conserved Elements across 100 vertebrates)
 
 - **Transcript features**:
   - **Gene_GC**: GC content of the gene
@@ -27,10 +27,11 @@
 
 - **Protein contexts**:
   - **TailAA_counts**: Total counts of amino acids in the extended tail
-  - **20 amino acids counts**: Counts of each of the 20 amino acids in the extended tail
+  - **Amino acids counts**: Counts of each of the 20 amino acids in the extended tail
 
-# Data download
-TAILVAR scores for all possible single nucleotide substitutions are available at:
+# Download
+**TAILVAR** scores for all possible single nucleotide substitutions are available for download here.
 
 # Citation
-Jihoon G. Yoon. Integrating protein context to improve the pathogenicity prediction for stop-lost variants.
+If you use **TAILVAR** in your research, please cite:
+Jihoon G. Yoon. *Integrating protein context to improve the pathogenicity prediction for stop-lost variants.*
