@@ -4,10 +4,7 @@ This R script is designed to extract specific data from the Ensembl database, fo
 
 #### Required R Packages:
 To run this script, you need to have the following R packages installed:
-- `tidyverse`
-- `biomaRt`
-- `stringr`
-- `Biostrings`
+- `tidyverse`, `biomaRt`, `stringr`, `Biostrings`
 
 #### Output Files:
 The script generates the following output files:
