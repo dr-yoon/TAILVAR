@@ -1,6 +1,8 @@
 # Load necessary libraries
 library(tidyverse)
 library(pROC)
+library(ggplot2)
+library(svglite)
 
 # Load pre-processed data
 model_data <- read_tsv("Development_dataset_TAILVAR_score.txt")
@@ -21,13 +23,15 @@ rf_auroc <- auc(rf_roc_curve)
 cat("AUROC of the Random Forest model on the test dataset:", rf_auroc, "\n")
 
 # Plot the distribution of TAILVAR Score (HGMD + gnomAD)
-ggplot(model_data, aes(x = TAILVAR, fill = Class, color = Class)) +
+plot1 <- ggplot(model_data, aes(x = TAILVAR, fill = Class, color = Class)) +
   geom_histogram(binwidth = 0.05, size = 1.0, alpha = 0.7, position = "identity") +
   labs(x = "TAILVAR score", y = "Frequency", fill = "Dataset", color = "Dataset") +
   scale_fill_manual(values = c("P" = "#EE9988", "B" = "#77AADD"), labels = c("P" = "HGMD", "B" = "gnomAD")) +
   scale_color_manual(values = c("P" = "#BB4444", "B" = "#4477AA"), labels = c("P" = "HGMD", "B" = "gnomAD")) +
   theme_classic() + scale_y_continuous(expand = c(0, 0)) + scale_x_continuous(expand = c(0, 0)) +
   theme(legend.position = "none")
+
+ggsave("Development_dataset_TAILVAR_distribtion.svg", plot = plot1, width = 6, height = 3)
 
 # Compute ROC curve and AUROC for the ClinVar dataset
 rf_roc_curve <- roc(validation_data$Class, validation_data$TAILVAR, levels = c("B", "P"))
@@ -36,7 +40,7 @@ cat("AUROC of the Random Forest model on the validation dataset:", rf_auroc, "\n
 
 # Plot the distribution of TAILVAR score (ClinVar)
 validation_data$Class <- factor(validation_data$Class, levels = c("VUS", "P", "B"))
-ggplot(validation_data, aes(x = TAILVAR, fill = Class, color = Class)) +
+plot2 <- ggplot(validation_data, aes(x = TAILVAR, fill = Class, color = Class)) +
   geom_histogram(binwidth = 0.05, size = 1.0, alpha = 0.7, position = "identity") +
   labs(x = "TAILVAR score", y = "Frequency", fill = "Dataset", color = "Dataset") +
   scale_fill_manual(values = c("P" = "#EE9988", "VUS" = "grey", "B" = "#77AADD"), labels = c("P" = "P/LP", "VUS" = "VUS", "B" = "B/LB")) +
@@ -44,17 +48,20 @@ ggplot(validation_data, aes(x = TAILVAR, fill = Class, color = Class)) +
   theme_classic() + scale_y_continuous(expand = c(0, 0)) + scale_x_continuous(expand = c(0, 0))+
   theme(legend.position = "none")
 
+ggsave("Validation_dataset_TAILVAR_distribtion.svg", plot = plot2, width = 6, height = 3)
+
 # Plot the distribution of TAILVAR score (gnomAD_all) according to AF
 stoplost_gnomAD <- stoplost_gnomAD %>% mutate(pAF = -log(gnomAD_AF))
-ggplot(stoplost_gnomAD, aes(y = TAILVAR, x = pAF)) +
+plot3 <- ggplot(stoplost_gnomAD, aes(y = TAILVAR, x = pAF)) +
   geom_point(size = 1, alpha = 0.9, color = "grey") +
   geom_smooth(method = "auto", color = "red", size = 1.2, se = TRUE) +
   labs(title = "gnomAD allele frequency", y = "TAILVAR score", x = "-log (AF)") + 
   coord_cartesian(ylim = c(0, 1), xlim = c(0, 15)) +  theme_classic() + 
   scale_y_continuous(expand = c(0, 0)) + scale_x_continuous(expand = c(0, 0))
 
-# AUC-ROC plot
-# Define the features and the labels
+ggsave("gnomAD_AF_TAILVAR_relationship.svg", plot = plot3, width = 6, height = 5)
+
+# AUC-ROC plots
 comparators <- c(all_of(comp_scores),"TAILVAR")
 AUROC_data <- model_data
 AUROC_data$Class <- ifelse(AUROC_data$Class == "P", 1, 0)
@@ -82,15 +89,19 @@ for (score in comparators) {
 }
 
 # Plot AUROC comparisons
-ggroc(roc_list, legacy.axes = TRUE, size = 1.2) +
+auroc_plot1 <- ggroc(roc_list, legacy.axes = TRUE, size = 1.2) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black") +
   labs(title = "ROC curves (HGMD/gnomAD)", x = "1 - Specificity", y = "Sensitivity") +
   theme_classic() + theme(legend.position = "right") + scale_color_discrete(name = "Comparators", labels = paste(comparators, "(AUROC =", auroc_values,")"))
 
-ggroc(roc_list2, legacy.axes = TRUE, size = 1.2) +
+ggsave("Development_dataset_TAILVAR_AUROC.svg", plot = auroc_plot1, width = 8, height = 6)
+
+auroc_plot2 <- ggroc(roc_list2, legacy.axes = TRUE, size = 1.2) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black") +
   labs(title = "ROC curves (ClinVar)", x = "1 - Specificity", y = "Sensitivity") +
   theme_classic() + theme(legend.position = "right") + scale_color_discrete(name = "Comparators", labels = paste(comparators, "(AUROC =", auroc_values2,")"))
+
+ggsave("Validation_dataset_TAILVAR_AUROC.svg", plot = auroc_plot2, width = 8, height = 6)
 
 # Compare AUROC values
 auroc_df_dev <- data.frame(Comparator = comparators, AUROC = auroc_values, Dataset = "HGMD/gnomAD")
@@ -102,8 +113,9 @@ auroc_combined_df$Dataset <- factor(auroc_combined_df$Dataset, levels = c("HGMD/
 auroc_combined_df$Comparator <- factor(auroc_combined_df$Comparator, levels = auroc_df_dev$Comparator[order(-auroc_df_dev$AUROC)])
 
 # Replot with bars filled by Dataset
-ggplot(auroc_combined_df, aes(x = Comparator, y = AUROC, fill = Dataset)) +
+auroc_plot3 <- ggplot(auroc_combined_df, aes(x = Comparator, y = AUROC, fill = Dataset)) +
   geom_bar(stat = "identity", position = "dodge") + labs(x = "", y = "AUROC") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_manual(values = c("HGMD/gnomAD" = "skyblue", "ClinVar" = "orange")) + coord_cartesian(ylim =c(0.5, 1))
 
+ggsave("TAILVAR_AUROC_comparisons.svg", plot = auroc_plot3, width = 10, height = 6)
