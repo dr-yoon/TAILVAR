@@ -31,7 +31,7 @@ Welcome 😊 to the **TAILVAR** repository! This repository stores the codebase 
   - **Amino acids counts**: Counts of each of the 20 amino acids in the extended tail
 
 # Download
-**TAILVAR** scores for all possible single nucleotide substitutions are available for download here.
+Datasets including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
