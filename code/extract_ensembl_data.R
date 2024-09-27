@@ -17,18 +17,19 @@ attributes_list <- list(
 )
 
 # Query the Ensembl database download
-#transcript_info_1 <- getBM(attributes = attributes_list[[1]], filters = "mane_select", values = TRUE, mart = ensembl)
-#transcript_info_2 <- getBM(attributes = attributes_list[[2]], filters = "mane_select", values = TRUE, mart = ensembl)
-#transcript_info_3 <- getBM(attributes = attributes_list[[3]], filters = "mane_select", values = TRUE, mart = ensembl)
-#transcript_info_4 <- getBM(attributes = attributes_list[[4]], filters = "mane_select", values = TRUE, mart = ensembl)
-#transcript_info_5 <- getBM(attributes = attributes_list[[5]], filters = "mane_select", values = TRUE, mart = ensembl)
+transcript_info_1 <- getBM(attributes = attributes_list[[1]], filters = "mane_select", values = TRUE, mart = ensembl)
+transcript_info_2 <- getBM(attributes = attributes_list[[2]], filters = "mane_select", values = TRUE, mart = ensembl)
+transcript_info_3 <- getBM(attributes = attributes_list[[3]], filters = "mane_select", values = TRUE, mart = ensembl)
+transcript_info_4 <- getBM(attributes = attributes_list[[4]], filters = "mane_select", values = TRUE, mart = ensembl)
+transcript_info_5 <- getBM(attributes = attributes_list[[5]], filters = "mane_select", values = TRUE, mart = ensembl)
 
-# Read pre-downloaded data
-transcript_info_1 <- read_tsv("mane_transcripts_gene.txt")
-transcript_info_2 <- read_tsv("mane_transcripts_position.txt")
-transcript_info_3 <- read_tsv("mane_transcripts_coding.txt")
-transcript_info_4 <- read_tsv("mane_transcripts_5utr.txt")
-transcript_info_5 <- read_tsv("mane_transcripts_3utr.txt")
+# Read pre-downloaded data: since querying the Ensembl database can be time-consuming, 
+# we use pre-downloaded data files instead. Uncomment the lines below to read the files.
+# transcript_info_1 <- read_tsv("mane_transcripts_gene.txt")
+# transcript_info_2 <- read_tsv("mane_transcripts_position.txt")
+# transcript_info_3 <- read_tsv("mane_transcripts_coding.txt")
+# transcript_info_4 <- read_tsv("mane_transcripts_5utr.txt")
+# transcript_info_5 <- read_tsv("mane_transcripts_3utr.txt")
 
 # Filter for valid chromosomes and remove NA values
 valid_chromosomes <- c(as.character(1:22), "X", "Y")
@@ -115,8 +116,6 @@ transcript_info_5 <- transcript_info_5 %>%
 sequence_info <- transcript_info_3 %>% left_join(transcript_info_4, by = "ensembl_transcript_id") %>% left_join(transcript_info_5, by = "ensembl_transcript_id")
 transcript_info <- left_join(transcript_info, sequence_info, by = "ensembl_transcript_id") %>% arrange(chromosome_name, POS_1)
 
-write.table(transcript_info, "mane_transcripts_info.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-
 # Function to get reverse complementary sequence
 reverse_complement <- function(sequence) {chartr("ATGC", "TACG", sapply(strsplit(sequence, NULL), function(x) paste(rev(x), collapse = "")))}
 
@@ -146,4 +145,5 @@ vcf_data <- bind_rows(lapply(vcf_data_list, function(df) {
 })) %>% arrange(chromosome, POS) %>% mutate(chromosome = paste0("chr", chromosome))
 
 # Write the final summary table and vcf_data to files
+write.table(transcript_info, "mane_transcripts_info.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(vcf_data, "stoplost_SNV.tsv", row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE)
