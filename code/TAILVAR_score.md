@@ -23,7 +23,7 @@ This R script is responsible for combining and formatting data necessary for dow
 - **`stoplost_gnomAD_prediction_data.txt`**: Input data for TAILVAR score prediction on gnomAD stoplost variants.
 - **`stoplost_SNV_prediction_data.txt`**: Input data for TAILVAR score prediction on all possible stoplost variants.
 
-### Step 2: Build Ensemble Model for TAILVAR Score
+### Step 2: Build Ensemble Model
 #### Script: `TAILVAR_score.R`
 This R script builds a Random Forest model to predict the pathogenicity of stoplost variants and calculate the TAILVAR scores.
 
@@ -42,7 +42,7 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 - **`stoplost_gnomAD_TAILVAR_score.txt`**: Calculated TAILVAR scores for gnomAD stoplost variants.
 - **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
 
-### Step 3: Generate figures for TAILVAR Performances
+### Step 3: Generate Performance Plots
 #### Script: `TAILVAR_performance.R`
 This R script generates plots for performance comparisons with TAILVAR score.
 
