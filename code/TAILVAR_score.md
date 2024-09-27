@@ -28,9 +28,7 @@ This R script is responsible for combining and formatting data necessary for dow
 This R script builds a Random Forest model to predict the pathogenicity of stoplost variants and calculate the TAILVAR scores.
 
 #### Required Packages
-- `tidyverse`
-- `caret`
-- `randomForest`
+- `tidyverse`, `caret`, `randomForest`, `readr`, `corrplot`, `reshape2`, `ggplot2`
 
 #### Input Files
 - **`HGMD_gnomAD_model_data.txt`**: Dataset for TAILVAR score model development.
@@ -43,3 +41,25 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 - **`Validation_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
 - **`stoplost_gnomAD_TAILVAR_score.txt`**: Calculated TAILVAR scores for gnomAD stoplost variants.
 - **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
+
+### Step 3: Generate figures for TAILVAR Performances
+#### Script: `TAILVAR_performance.R`
+This R script generates plots for performance comparisons with TAILVAR score.
+
+#### Required Packages
+- `tidyverse`, `pROC`, `ggplot2`, `svglite`
+
+#### Input Files
+- **`Development_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
+- **`Validation_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
+- **`stoplost_gnomAD_TAILVAR_score.txt`**: Calculated TAILVAR scores for gnomAD stoplost variants.
+- **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
+
+#### Output Files
+- **`Development_dataset_TAILVAR_distribtion.svg`**
+- **`Validation_dataset_TAILVAR_distribtion.svg`**
+- **`gnomAD_AF_TAILVAR_relationship.svg`**
+- **`Development_dataset_TAILVAR_AUROC.svg`**
+- **`Validation_dataset_TAILVAR_AUROC.svg`**
+- **`TAILVAR_AUROC_comparisons.svg`**
+
