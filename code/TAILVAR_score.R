@@ -1,7 +1,10 @@
 # Load necessary libraries for data manipulation and modeling
-library(tidyverse)    # For data manipulation
-library(caret)        # For model training and cross-validation
-library(randomForest) # For Random Forest model development
+library(tidyverse)
+library(caret)
+library(randomForest)
+library(readr)
+library(corrplot)
+library(reshape2)
 
 # Load pre-processed datasets for model development and validation
 model_data <- read_tsv("HGMD_gnomAD_model_data.txt")        # Model development dataset
@@ -75,3 +78,27 @@ write.table(model_data, "Development_dataset_TAILVAR_score.txt", row.names = FAL
 write.table(validation_data, "Validation_dataset_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoplost_gnomAD, "stoplost_gnomAD_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoplost_all, "stoplost_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+
+# Calculate the correlation matrix for the selected parameters
+correlation_matrix <- cor(model_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature)), method = "spearman", use = "complete.obs")
+print(correlation_matrix)
+correlation_melt <- melt(correlation_matrix)
+
+# Plot the Spearman rank correlation matrix using corrplot
+col <- colorRampPalette(c("#4477AA","#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(correlation_matrix, method = "circle", type = "upper", col=col(100), tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7, mar = c(0, 0, 1, 0))
+
+# Extract variable importance using Gini index
+variable_importance <- importance(final_rf_model, type = 2)
+importance_df <- data.frame(Variable = rownames(variable_importance), Importance = variable_importance[, "MeanDecreaseGini"])
+importance_df <- importance_df %>% mutate(RelativeImportance = Importance / sum(Importance) * 100) %>%
+  arrange(desc(RelativeImportance)) %>%  slice_head(n = 20)
+
+# Plot the normalized importance scores
+importance_df %>% arrange(desc(RelativeImportance)) %>%
+  ggplot(aes(x = reorder(Variable, RelativeImportance, decreasing = TRUE), y = RelativeImportance)) +
+  geom_bar(stat = "identity", fill = "navy") +
+  labs(x = "Parameters", y = "Relative importance (%)") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  scale_y_continuous(expand = c(0, 0))
+
