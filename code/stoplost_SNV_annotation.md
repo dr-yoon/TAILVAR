@@ -8,12 +8,9 @@ This repository provides a pipeline for extracting, annotating, and filtering va
 #### Script: `extract_ensembl_data.R`
 This R script extracts data from the Ensembl database, focusing on stop-lost variants and associated transcript information.
 
-#### Requirements:
+#### Required packages:
 To run this script, you need to have the following R packages installed:
-- `tidyverse`
-- `biomaRt`
-- `stringr`
-- `Biostrings`
+- `tidyverse`, `biomaRt`, `stringr`, `Biostrings`
 
 #### Output Files:
 - **`mane_transcripts_info.txt`**: Information on stop codons for all MANE select transcripts retrieved from the Ensembl database.
