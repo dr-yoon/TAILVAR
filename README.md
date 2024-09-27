@@ -36,4 +36,4 @@ Welcome 😊 to the **TAILVAR** repository! This repository stores the codebase 
 # Citation
 If you use **TAILVAR** in your research, please cite:
 
-JG Yoon. *Integrating protein context to improve the pathogenicity prediction for stop-lost variants.*
+JG Yoon. *Integrating transcript and protein contexts to improve the pathogenicity prediction for stop-lost variants.*
