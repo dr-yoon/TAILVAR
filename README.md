@@ -13,7 +13,7 @@
   - **[DANN](https://cbcl.ics.uci.edu/public_data/DANN/)** (Deleterious Annotation of genetic variants using Neural Networks)
   - **[FATHMM](http://fathmm.biocompute.org.uk/fathmmMKL.htm)** (Functional Analysis through Hidden Markov Models)
   - **[Eigen](http://www.columbia.edu/~ii2135/eigen.html)**
-  - **[BayesDel_addAF, BayesDel_noAF](http://fengbj-laboratory.org/BayesDel/BayesDel.html)** (Bayesian Deleteriousness score with/without allele frequency)
+  - **[BayesDel_addAF, BayesDel_noAF](https://fenglab.chpc.utah.edu/BayesDel/BayesDel.html)** (Bayesian Deleteriousness score with/without allele frequency)
   - **[integrated_fitCons](https://www.nature.com/articles/ng.3196)** (Integrated Fitness Consequence Score)
 
 - **Conservation scores**:
