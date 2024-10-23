@@ -5,11 +5,12 @@ library(randomForest)
 library(readr)
 library(corrplot)
 library(reshape2)
+library(ggbreak)
 
 # Load pre-processed datasets for model development and validation
 model_data <- read_tsv("HGMD_gnomAD_model_data.txt")        # Model development dataset
 validation_data <- read_tsv("ClinVar_validation_data.txt")  # Model validation dataset
-stoplost_all <- read_tsv("stoplost_SNV_prediction_data.txt")# Dataset for predicting TAILVAR score on all stoplost variants
+stoplost_all <- read_tsv("stoplost_SNV_prediction_data.txt") # Dataset for predicting TAILVAR score on all stoplost variants
 stoplost_gnomAD <- read_tsv("stoplost_gnomAD_prediction_data.txt") # Dataset for predicting TAILVAR score on gnomAD stoplost variants
 
 # Define feature groups for model input
@@ -24,11 +25,9 @@ model_input <- model_data %>%
   dplyr::select("Class", all_of(comp_scores), all_of(gene_feature), all_of(amino_acid_columns)) %>% 
   mutate(Class = factor(Class, levels = c("B", "P")))  # Ensure the target variable is a factor with correct levels
 
-# Split the data into training and testing sets (80% training, 20% testing)
+# Split the data into training and testing sets
 set.seed(123)  # Set seed for reproducibility
-trainIndex <- createDataPartition(model_input$Class, p = 0.8, list = FALSE)
-train_data <- model_input[trainIndex,]
-test_data <- model_input[-trainIndex,]
+train_data <- model_input
 
 # Set up cross-validation for model training
 train_control <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = twoClassSummary)
@@ -53,14 +52,16 @@ for (ntree in ntree_values) {
 }
 
 # Plot AUROC vs. hyper-parameters (ntree, mtry) to visualize model performance
+svg("Hyperparameters.svg", width = 8, height = 8)
 ggplot(results, aes(x = ntree, y = ROC, color = factor(mtry))) +
   geom_line(size = 1.2) + geom_point(size = 3) +
   labs(title = "AUROC vs. Hyper-parameters (ntree, mtry)",
        x = "Number of Trees (ntree)", y = "AUROC", color = "mtry") +
   theme_minimal() + theme(legend.position = "right")
+dev.off()
 
 # Select the best combination of mtry and ntree based on the results
-selected_params <- c(10, 100)  # Example selection; update based on your results
+selected_params <- c(20, 100)  # Example selection; update based on your results
 cat("Selected mtry:", selected_params[1], "with ntree:", selected_params[2], "\n")
 
 # Train the final Random Forest model using the selected hyper-parameters
@@ -86,7 +87,11 @@ correlation_melt <- melt(correlation_matrix)
 
 # Plot the Spearman rank correlation matrix using corrplot
 col <- colorRampPalette(c("#4477AA","#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
-corrplot(correlation_matrix, method = "circle", type = "upper", col=col(100), tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7, mar = c(0, 0, 1, 0))
+svg("Correlation_plot.svg", width = 8, height = 8)
+corrplot(correlation_matrix, method = "circle", type = "upper", col = col(100), 
+         tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7, mar = c(0, 0, 1, 0))
+dev.off()
+
 
 # Extract variable importance using Gini index
 variable_importance <- importance(final_rf_model, type = 2)
@@ -95,10 +100,11 @@ importance_df <- importance_df %>% mutate(RelativeImportance = Importance / sum(
   arrange(desc(RelativeImportance)) %>%  slice_head(n = 20)
 
 # Plot the normalized importance scores
+svg("Parameter_Importance.svg", width = 8, height = 4)
 importance_df %>% arrange(desc(RelativeImportance)) %>%
   ggplot(aes(x = reorder(Variable, RelativeImportance, decreasing = TRUE), y = RelativeImportance)) +
-  geom_bar(stat = "identity", fill = "navy") +
+  geom_bar(stat = "identity", fill = "navy") + geom_text(aes(label = round(RelativeImportance, 1)), vjust = 1.5, size = 3.5, color = "white") +
   labs(x = "Parameters", y = "Relative importance (%)") +
-  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_y_break(c(10, 40)) +
   scale_y_continuous(expand = c(0, 0))
-
+dev.off()
