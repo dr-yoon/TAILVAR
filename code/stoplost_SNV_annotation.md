@@ -26,9 +26,11 @@ The **`stoplost_SNV.vcf`** file is annotated using VEP to add additional informa
 To run the VEP annotation, you need the following tools and data:
 - **[Singularity](https://github.com/sylabs/singularity)**: Used to run VEP in a containerized environment. Alternatively, VEP can be run directly without Singularity.
 - **[VEP (Variant Effect Predictor)](https://github.com/Ensembl/ensembl-vep)**
-- **VEP Plugins and Data Files**:
+- **VEP Plugins and Database Files**:
   - [dbNSFP](https://sites.google.com/site/jpopgen/dbNSFP)
   - [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/)
+  - [NARD2](https://nard.macrogen.com/)
+  - [ToMMo 60KJPN](https://jmorp.megabank.tohoku.ac.jp/downloads/tommo-60kjpn-20240904-af_snvindelall)
   - Reference genome file (hg38)
 
 #### Output Files:
