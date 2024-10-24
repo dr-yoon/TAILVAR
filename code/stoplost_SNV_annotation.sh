@@ -25,8 +25,10 @@ rm -f "${FILE_NAME}_body.txt"  # Clean up the temporary file
 SING_IMAGE="/path_to/ensembl-vep_latest.sif"  # Path to VEP Singularity image
 VEP_DATA="/path_to/vep_data"                  # Path to VEP data directory
 REF_GENOME="/path_to/Homo_sapiens_assembly38.fasta"  # Path to reference genome (hg38)
-DBNSFP_DB="/path_to/dbNSFP4.9a_grch38.gz"     # Path to dbNSFP database
+DBNSFP_DB="${VEP_DATA}/plugins/dbNSFP4.9a_grch38.gz"     # Path to dbNSFP database
 CLINVAR_DB="/path_to/clinvar_20240917.vcf.gz" # Path to ClinVar database
+NARD2_DB="/path_to/clinvar_20240917.vcf.gz" # Path to NARD2 database
+ToMMO_60KJPN_DB="/path_to/tommo-60kjpn-20240904-GRCh38-snvindel-af-autosome.vcf.gz" # Path to ToMMO_60KJPN database
 
 # Annotation command using VEP
 singularity run "${SING_IMAGE}" vep \
@@ -38,8 +40,10 @@ singularity run "${SING_IMAGE}" vep \
   --biotype --canonical --numbers --mane --variant_class --protein \
   --input_file "${WORK_DIR}/${VCF_FILE}" \
   --output_file "${WORK_DIR}/${FILE_NAME}_anno.txt" \
-  --plugin dbNSFP,"${DBNSFP_DB}",CADD_phred,DANN_score,MutationTaster_score,fathmm-MKL_coding_score,Eigen-phred_coding,BayesDel_addAF_score,BayesDel_noAF_score,integrated_fitCons_score,GERP++_RS,phyloP100way_vertebrate,phastCons100way_vertebrate,gnomAD_exomes_flag,gnomAD_exomes_AF,gnomAD_exomes_POPMAX_AF,gnomAD_genomes_flag,gnomAD_genomes_AF,gnomAD_genomes_POPMAX_AF \
-  --custom file="${CLINVAR_DB}",short_name=ClinVar,format=vcf,type=exact,fields=CLNDN%CLNSIG
+  --plugin dbNSFP,"${DBNSFP_DB}",CADD_phred,DANN_score,fathmm-MKL_coding_score,Eigen-phred_coding,BayesDel_addAF_score,BayesDel_noAF_score,integrated_fitCons_score,GERP++_RS,phyloP100way_vertebrate,phastCons100way_vertebrate,gnomAD_exomes_flag,gnomAD_exomes_AF,gnomAD_exomes_POPMAX_AF,gnomAD_genomes_flag,gnomAD_genomes_AF,gnomAD_genomes_POPMAX_AF \
+  --custom file="${CLINVAR_DB}",short_name=ClinVar,format=vcf,type=exact,fields=CLNDN%CLNSIG \
+  --custom file="${NARD2_DB}",short_name=NARD2,format=vcf,type=exact,fields=AF \
+  --custom file="${ToMMO_60KJPN_DB}",short_name=ToMMo60K,format=vcf,type=exact,fields=AF
 
 # Step 4: Filter annotated variants
 Rscript filter_variants.R "${FILE_NAME}"
