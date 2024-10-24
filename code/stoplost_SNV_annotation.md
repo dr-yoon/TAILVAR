@@ -23,7 +23,7 @@ The **`stoplost_SNV.txt`** file generated in Step 1 is converted to VCF format, 
 The **`stoplost_SNV.vcf`** file is annotated using VEP to add additional information about the variants.
 
 #### Requirements:
-To run the VEP annotation, you need the following tools and data:
+To run the VEP annotation, you need the following tools and data files:
 - **[Singularity](https://github.com/sylabs/singularity)**: Used to run VEP in a containerized environment. Alternatively, VEP can be run directly without Singularity.
 - **[VEP (Variant Effect Predictor)](https://github.com/Ensembl/ensembl-vep)**
 - **VEP Plugins and Database Files**: should be downloaded and placed appropriately
