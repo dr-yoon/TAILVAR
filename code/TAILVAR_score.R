@@ -2,86 +2,88 @@
 library(tidyverse)
 library(caret)
 library(randomForest)
-library(readr)
 library(corrplot)
 library(reshape2)
 library(ggbreak)
 
 # Load pre-processed datasets for model development and validation
-model_data <- read_tsv("HGMD_gnomAD_model_data.txt")        # Model development dataset
-validation_data <- read_tsv("ClinVar_validation_data.txt")  # Model validation dataset
+train_data <- read_tsv("HGMD_gnomAD_train_data.txt")        # Model training set
+test_data <- read_tsv("ClinVar_ALFA_test_data.txt")  # Model testing set
 stoplost_all <- read_tsv("stoplost_SNV_prediction_data.txt") # Dataset for predicting TAILVAR score on all stoplost variants
-stoplost_gnomAD <- read_tsv("stoplost_gnomAD_prediction_data.txt") # Dataset for predicting TAILVAR score on gnomAD stoplost variants
 
 # Define feature groups for model input
-comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", 
-                 "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
+comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
 gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "TailAA_counts")
-amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", 
-                        "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
+amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "Hydrophobicity")
 
 # Prepare the input data for Random Forest model development
-model_input <- model_data %>% 
+train_data <- train_data %>% 
   dplyr::select("Class", all_of(comp_scores), all_of(gene_feature), all_of(amino_acid_columns)) %>% 
   mutate(Class = factor(Class, levels = c("B", "P")))  # Ensure the target variable is a factor with correct levels
 
-# Split the data into training and testing sets
-set.seed(123)  # Set seed for reproducibility
-train_data <- model_input
-
 # Set up cross-validation for model training
+set.seed(123)  # Set seed for reproducibility
 train_control <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = twoClassSummary)
 
 # Define grid of hyper-parameters to tune (mtry, ntree)
-tune_grid <- expand.grid(mtry = c(2, 5, 10, 20, 30))  # Different values of mtry (number of variables considered at each split)
-ntree_values <- c(10, 25, 50, 100, 150, 200)          # Different values of ntree (number of trees in the forest)
+tune_grid <- expand.grid(mtry = c(2, 5, 10, 15, 20))  # Different values of mtry (number of variables considered at each split)
+ntree_values <- c(20, 40, 60, 80, 100)                # Different values of ntree (number of trees in the forest)
+maxnodes_values <- c(5, 10, 20, 30)                      # Values for maxnodes
 
 # Initialize a dataframe to store tuning results
 results <- data.frame()
 
-# Perform grid search to optimize mtry and ntree
-for (ntree in ntree_values) {
-  rf_tune <- train(Class ~ ., data = train_data, method = "rf", 
-                   trControl = train_control, tuneGrid = tune_grid, metric = "ROC", 
-                   ntree = ntree)
-  
-  for (mtry in tune_grid$mtry) {
-    roc_value <- rf_tune$results$ROC[rf_tune$results$mtry == mtry]
-    results <- rbind(results, data.frame(ntree = ntree, mtry = mtry, ROC = roc_value))
+# Perform grid search to optimize mtry, ntree, and maxnodes
+for (maxnodes in maxnodes_values) {
+  for (ntree in ntree_values) {
+    # Train the model with current ntree value and the entire tune grid for mtry
+    rf_tune <- train(Class ~ ., data = train_data, method = "rf", 
+                     trControl = train_control, tuneGrid = tune_grid, metric = "ROC", 
+                     ntree = ntree, maxnodes = maxnodes)
+    
+    # Loop through all combinations of mtry to extract results
+    for (i in 1:nrow(tune_grid)) {
+      mtry <- tune_grid$mtry[i]
+      
+      # Find the ROC for the current combination of mtry
+      roc_value <- rf_tune$results$ROC[rf_tune$results$mtry == mtry]
+      
+      # Store the result
+      results <- rbind(results, data.frame(ntree = ntree, mtry = mtry, maxnodes = maxnodes, ROC = roc_value))
+    }
   }
 }
 
-# Plot AUROC vs. hyper-parameters (ntree, mtry) to visualize model performance
+# Plot AUROC vs. hyper-parameters (mtry, ntree, maxnodes) to visualize model performance
 svg("Hyperparameters.svg", width = 8, height = 8)
 ggplot(results, aes(x = ntree, y = ROC, color = factor(mtry))) +
   geom_line(size = 1.2) + geom_point(size = 3) +
-  labs(title = "AUROC vs. Hyper-parameters (ntree, mtry)",
+  labs(title = "AUROC vs. Hyper-parameters (ntree, mtry) Faceted by maxnodes",
        x = "Number of Trees (ntree)", y = "AUROC", color = "mtry") +
+  facet_wrap(~ maxnodes) +  # Add faceting by maxnodes
   theme_minimal() + theme(legend.position = "right")
 dev.off()
 
-# Select the best combination of mtry and ntree based on the results
-selected_params <- c(20, 100)  # Example selection; update based on your results
-cat("Selected mtry:", selected_params[1], "with ntree:", selected_params[2], "\n")
+# Select the best AUROC combination of mtry, ntree, maxnodes
+selected_params <- c(10, 40, 20)
+cat("Selected mtry:", selected_params[1], "ntree:", selected_params[2], "maxnode:", selected_params[3],"\n")
 
 # Train the final Random Forest model using the selected hyper-parameters
 final_rf_model <- randomForest(Class ~ ., data = train_data, 
-                               mtry = selected_params[1], ntree = selected_params[2])
+                               mtry = selected_params[1], ntree = selected_params[2], maxnodes = selected_params[3])
 
 # Predict TAILVAR scores for all datasets using the final model
-model_data$TAILVAR <- predict(final_rf_model, model_data, type = "prob")[, "P"]
-validation_data$TAILVAR <- predict(final_rf_model, validation_data, type = "prob")[, "P"]
+train_data$TAILVAR <- predict(final_rf_model, train_data, type = "prob")[, "P"]
+test_data$TAILVAR <- predict(final_rf_model, test_data, type = "prob")[, "P"]
 stoplost_all$TAILVAR <- predict(final_rf_model, stoplost_all, type = "prob")[, "P"]
-stoplost_gnomAD$TAILVAR <- predict(final_rf_model, stoplost_gnomAD, type = "prob")[, "P"]
 
 # Save the TAILVAR scores to output files
-write.table(model_data, "Development_dataset_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(validation_data, "Validation_dataset_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(stoplost_gnomAD, "stoplost_gnomAD_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(train_data, "Training_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(test_data, "Testing_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoplost_all, "stoplost_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 
 # Calculate the correlation matrix for the selected parameters
-correlation_matrix <- cor(model_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature)), method = "spearman", use = "complete.obs")
+correlation_matrix <- cor(train_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature)), method = "spearman", use = "complete.obs")
 print(correlation_matrix)
 correlation_melt <- melt(correlation_matrix)
 
@@ -97,7 +99,7 @@ dev.off()
 variable_importance <- importance(final_rf_model, type = 2)
 importance_df <- data.frame(Variable = rownames(variable_importance), Importance = variable_importance[, "MeanDecreaseGini"])
 importance_df <- importance_df %>% mutate(RelativeImportance = Importance / sum(Importance) * 100) %>%
-  arrange(desc(RelativeImportance)) %>%  slice_head(n = 20)
+  arrange(desc(RelativeImportance)) %>%  slice_head(n = 15)
 
 # Plot the normalized importance scores
 svg("Parameter_Importance.svg", width = 8, height = 4)
@@ -105,6 +107,6 @@ importance_df %>% arrange(desc(RelativeImportance)) %>%
   ggplot(aes(x = reorder(Variable, RelativeImportance, decreasing = TRUE), y = RelativeImportance)) +
   geom_bar(stat = "identity", fill = "navy") + geom_text(aes(label = round(RelativeImportance, 1)), vjust = 1.5, size = 3.5, color = "white") +
   labs(x = "Parameters", y = "Relative importance (%)") +
-  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_y_break(c(10, 40)) +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_y_break(c(10, 35)) +
   scale_y_continuous(expand = c(0, 0))
 dev.off()
