@@ -29,8 +29,6 @@ To run the VEP annotation, you need the following tools and data files:
 - **VEP Plugins and Database Files**: should be downloaded and placed appropriately
   - [dbNSFP](https://sites.google.com/site/jpopgen/dbNSFP)
   - [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/)
-  - [NARD2](https://nard.macrogen.com/)
-  - [ToMMo 60KJPN](https://jmorp.megabank.tohoku.ac.jp/downloads/tommo-60kjpn-20240904-af_snvindelall)
   - Reference genome file (hg38)
 
 #### Output Files:
