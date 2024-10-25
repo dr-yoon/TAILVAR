@@ -18,10 +18,9 @@ This R script is responsible for combining and formatting data necessary for dow
 - **`stoplost_ClinVar_filtered.txt`**: An annotated and filtered file of ClinVar stoplost variants.
 
 #### Output Files
-- **`HGMD_gnomAD_model_data.txt`**: Dataset for TAILVAR score model development.
-- **`ClinVar_validation_data.txt`**: Dataset for TAILVAR score model validation.
-- **`stoplost_gnomAD_prediction_data.txt`**: Input data for TAILVAR score prediction on gnomAD stoplost variants.
-- **`stoplost_SNV_prediction_data.txt`**: Input data for TAILVAR score prediction on all possible stoplost variants.
+- **`HGMD_gnomAD_train_data.txt`**: Training dataset for model development.
+- **`ClinVar_ALFA_test_data.txt`**: Testing dataset for model validation.
+- **`stoplost_SNV_prediction_data.txt`**: Input data for TAILVAR score prediction of all possible stoplost variants.
 
 ### Step 2: Build Ensemble Model
 #### Script: `TAILVAR_score.R`
@@ -31,16 +30,16 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 - `tidyverse`, `caret`, `randomForest`, `readr`, `corrplot`, `reshape2`, `ggplot2`
 
 #### Input Files
-- **`HGMD_gnomAD_model_data.txt`**: Dataset for TAILVAR score model development.
-- **`ClinVar_validation_data.txt`**: Dataset for TAILVAR score model validation.
-- **`stoplost_gnomAD_prediction_data.txt`**: Input data for TAILVAR score prediction on gnomAD stoplost variants.
-- **`stoplost_SNV_prediction_data.txt`**: Input data for TAILVAR score prediction on all possible stoplost variants.
+- **`HGMD_gnomAD_train_data.txt`**: Training dataset for model development.
+- **`ClinVar_ALFA_test_data.txt`**: Testing dataset for model validation.
+- **`stoplost_SNV_prediction_data.txt`**: Input data for TAILVAR score prediction of all possible stoplost variants.
 
 #### Output Files
-- **`Development_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
-- **`Validation_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
-- **`stoplost_gnomAD_TAILVAR_score.txt`**: Calculated TAILVAR scores for gnomAD stoplost variants.
+- **`Training_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
+- **`Testing_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
 - **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
+- **`Correlation_plot.svg`**
+- **`Parameter_Importance.svg`**
 
 ### Step 3: Generate Performance Plots
 #### Script: `TAILVAR_performance.R`
@@ -50,9 +49,8 @@ This R script generates plots for performance comparisons with TAILVAR score.
 - `tidyverse`, `pROC`, `ggplot2`, `svglite`
 
 #### Input Files
-- **`Development_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
-- **`Validation_dataset_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
-- **`stoplost_gnomAD_TAILVAR_score.txt`**: Calculated TAILVAR scores for gnomAD stoplost variants.
+- **`Training_TAILVAR_score.txt`**: Calculated TAILVAR scores for training dataset.
+- **`Testing_TAILVAR_score.txt`**: Calculated TAILVAR scores for testing dataset.
 - **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
 
 #### Output Files
