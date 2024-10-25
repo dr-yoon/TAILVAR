@@ -15,7 +15,7 @@ dataset <- dataset %>% filter(Feature %in% transcript_info$ensembl_transcript_id
                          Amino_acids = str_extract(Amino_acids, "(?<=/).*"), extended_length = str_extract(HGVSp, "(?<=fsTer|extTer)(\\d+|\\?)")) %>%
   separate(Codons, into = c("Codons_REF", "Codons_ALT"), sep = "\\/") %>% separate(Location, into = c("Chromosome", "Position"), sep = ":")
 
-Pop_AF <-c("gnomAD_exomes_AF", "gnomAD_exomes_POPMAX_AF", "gnomAD_genomes_AF", "gnomAD_genomes_POPMAX_AF", "NARD2_AF", "ToMMo60K_AF", "ALFA_Total_AF")
+Pop_AF <-c("gnomAD_exomes_AF", "gnomAD_exomes_POPMAX_AF", "gnomAD_genomes_AF", "gnomAD_genomes_POPMAX_AF","ALFA_European_AF","ALFA_African_AF","ALFA_Asian_AF","ALFA_Other_AF","ALFA_Total_AF")
 comp_scores <- c("CADD_phred", "DANN_score", "fathmm-MKL_coding_score", "Eigen-phred_coding", "BayesDel_addAF_score", "BayesDel_noAF_score", "integrated_fitCons_score", "GERP++_RS", "phyloP100way_vertebrate", "phastCons100way_vertebrate")
 
 dataset <- dataset %>% 
