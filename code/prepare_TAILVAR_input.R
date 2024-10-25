@@ -17,8 +17,7 @@ stoplost_all <- stoplost_all %>% mutate(TailAA_seq = paste0(Amino_acids, TailAA_
 stoplost_all <- stoplost_all %>% filter(is.na(TailAA_counts) == FALSE)
 
 # filtered by gnomAD AF
-stoplost_gnomAD <- stoplost_all %>% filter(gnomAD_exomes_POPMAX_AF > 0 | gnomAD_genomes_POPMAX_AF > 0)
-gnomAD_MAF_0.001 <- stoplost_gnomAD %>% filter(gnomAD_exomes_POPMAX_AF > 0.001 | gnomAD_genomes_POPMAX_AF > 0.001)
+gnomAD_MAF_0.001 <- stoplost_all %>% filter(gnomAD_exomes_POPMAX_AF > 0.001 | gnomAD_genomes_POPMAX_AF > 0.001)
 gnomAD_MAF_0.001 <- gnomAD_MAF_0.001 %>% mutate(Class = "B")
 
 # Load HGMD data
@@ -58,13 +57,11 @@ amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "
 for (aa in amino_acid_columns) {train_data <- train_data %>% mutate(!!aa := str_count(TailAA_seq, aa))}
 for (aa in amino_acid_columns) {test_data <- test_data %>% mutate(!!aa := str_count(TailAA_seq, aa))}
 for (aa in amino_acid_columns) {stoplost_all <- stoplost_all %>% mutate(!!aa := str_count(TailAA_seq, aa))}
-for (aa in amino_acid_columns) {stoplost_gnomAD <- stoplost_gnomAD %>% mutate(!!aa := str_count(TailAA_seq, aa))}
-hydrophobic_aa <- c("A", "I", "L", "M", "F", "V", "P")
 
+hydrophobic_aa <- c("A", "I", "L", "M", "F", "V", "P")
 train_data <- train_data %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydrophobic_aa)))/TailAA_counts)
 test_data <- test_data %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydrophobic_aa)))/TailAA_counts)
 stoplost_all <- stoplost_all %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydrophobic_aa)))/TailAA_counts)
-stoplost_gnomAD <- stoplost_gnomAD %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydrophobic_aa)))/TailAA_counts)
 
 # Define features and target
 comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
@@ -87,11 +84,6 @@ for (scores in comp_scores) {
     stoplost_all[[scores]][is.na(stoplost_all[[scores]])] <- median(stoplost_all[[scores]], na.rm = TRUE)
   }
 }
-for (scores in comp_scores) {
-  if (is.numeric(stoplost_gnomAD[[scores]])) {
-    stoplost_gnomAD[[scores]][is.na(stoplost_gnomAD[[scores]])] <- median(stoplost_gnomAD[[scores]], na.rm = TRUE)
-  }
-}
 
 # Prepare the dataset
 train_data <- train_data %>% filter(Class %in% c("B", "P"), is.na(TailAA_counts) == FALSE)
@@ -100,5 +92,4 @@ test_data <- test_data %>% filter(Class %in% c("B", "VUS", "P"), is.na(TailAA_co
 # Write the filtered dataset to a file
 write.table(train_data, "HGMD_gnomAD_train_data.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(test_data, "ClinVar_ALFA_test_data.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(stoplost_gnomAD, "stoplost_gnomAD_prediction_data.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoplost_all, "stoplost_SNV_prediction_data.txt", row.names = FALSE, sep = "\t", quote = FALSE)
