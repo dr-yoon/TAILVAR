@@ -40,7 +40,7 @@ singularity run "${SING_IMAGE}" vep \
   --biotype --canonical --numbers --mane --variant_class --protein \
   --input_file "${WORK_DIR}/${VCF_FILE}" \
   --output_file "${WORK_DIR}/${FILE_NAME}_anno.txt" \
-  --plugin dbNSFP,"${DBNSFP_DB}",CADD_phred,DANN_score,fathmm-MKL_coding_score,Eigen-phred_coding,BayesDel_addAF_score,BayesDel_noAF_score,integrated_fitCons_score,GERP++_RS,phyloP100way_vertebrate,phastCons100way_vertebrate,gnomAD_exomes_flag,gnomAD_exomes_AF,gnomAD_exomes_POPMAX_AF,gnomAD_genomes_flag,gnomAD_genomes_AF,gnomAD_genomes_POPMAX_AF \
+  --plugin dbNSFP,"${DBNSFP_DB}",CADD_phred,DANN_score,fathmm-MKL_coding_score,Eigen-phred_coding,BayesDel_addAF_score,BayesDel_noAF_score,integrated_fitCons_score,GERP++_RS,phyloP100way_vertebrate,phastCons100way_vertebrate,gnomAD_exomes_flag,gnomAD_exomes_AF,gnomAD_exomes_POPMAX_AF,gnomAD_genomes_flag,gnomAD_genomes_AF,gnomAD_genomes_POPMAX_AF, ALFA_Total_AF \
   --custom file="${CLINVAR_DB}",short_name=ClinVar,format=vcf,type=exact,fields=CLNDN%CLNSIG \
   --custom file="${NARD2_DB}",short_name=NARD2,format=vcf,type=exact,fields=AF \
   --custom file="${ToMMO_60KJPN_DB}",short_name=ToMMo60K,format=vcf,type=exact,fields=AF
