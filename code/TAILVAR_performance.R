@@ -90,17 +90,6 @@ plot4 <- ggplot(stoplost_gnomAD, aes(y = TAILVAR, x = pAF)) +
   scale_y_continuous(expand = c(0, 0), breaks = seq(0, 1, by = 0.2)) + scale_x_continuous(expand = c(0, 0), breaks = seq(0, 14, by = 2))
 ggsave("gnomAD_AF_TAILVAR_relationship.svg", plot = plot4, width = 6, height = 4)
 
-# Plot the relationship between Tail length and TAILVAR score
-stoplost_all <- stoplost_all %>% mutate(TailAA_counts = as.numeric(TailAA_counts)) %>% filter(is.na(TailAA_counts) == FALSE)
-plot5 <- ggplot(stoplost_all, aes(y = TAILVAR, x = TailAA_counts)) +
-  geom_jitter(width = 0.5, height = 0.5, size = 0.5, alpha = 0.1, color = "navy") +
-  geom_smooth(method = "auto", color = "red", size = 1.2, se = TRUE) +
-  labs(y = "TAILVAR score", x = "TailAA_counts") + 
-  coord_cartesian(ylim = c(0, 1), xlim = c(0, 100)) +  theme_classic() + 
-  theme(axis.title.x = element_text(size = 14), axis.title.y = element_text(size = 14)) +
-  scale_y_continuous(expand = c(0, 0), breaks = seq(0, 1, by = 0.2)) + scale_x_continuous(expand = c(0, 0), breaks = seq(0, 100, by = 20))
-ggsave("TAIL_length_TAILVAR_relationship.svg", plot = plot5, width = 6, height = 4)
-
 # AUC-ROC plots
 comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
 comparators <- c(all_of(comp_scores),"TAILVAR")
