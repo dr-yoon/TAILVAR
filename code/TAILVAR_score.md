@@ -54,10 +54,11 @@ This R script generates plots for performance comparisons with TAILVAR score.
 - **`stoplost_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoplost variants.
 
 #### Output Files
-- **`Development_dataset_TAILVAR_distribtion.svg`**
-- **`Validation_dataset_TAILVAR_distribtion.svg`**
+- **`Train_TAILVAR_distribtion.svg`**
+- **`Test_TAILVAR_distribtion.svg`**
+- **`Clinvar_VUS_Gaussian_mixture_with_threshold.svg`**
 - **`gnomAD_AF_TAILVAR_relationship.svg`**
-- **`Development_dataset_TAILVAR_AUROC.svg`**
-- **`Validation_dataset_TAILVAR_AUROC.svg`**
+- **`Train_dataset_AUROC.svg`**
+- **`Test_dataset_AUROC.svg`**
 - **`TAILVAR_AUROC_comparisons.svg`**
 
