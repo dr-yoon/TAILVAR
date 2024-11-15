@@ -29,6 +29,7 @@
 - **Protein contexts**:
   - **TailAA_counts**: Total counts of amino acids in the extended tail
   - **Amino acids counts**: Counts of each of the 20 amino acids in the extended tail
+  - **Hydrophobicity**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,W,V) in the extended tail
 
 # Download
 Datasets including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
