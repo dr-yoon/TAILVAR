@@ -31,14 +31,14 @@
   - **Amino acids counts**: Counts of each of the 20 amino acids in the extended tail
   - **Hydrophobicity**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,W,V) in the extended tail
 
-# Download
-Datasets including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
-
 # Annotation
 To annotate **TAILVAR** scores in VEP, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
+
+# Download
+Datasets including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
