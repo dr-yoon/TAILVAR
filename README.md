@@ -38,7 +38,7 @@ Datasets including **TAILVAR** scores for all possible single nucleotide substit
 **TAILVAR** scores can be annotated in VEP using this command,
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
-
+```
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
