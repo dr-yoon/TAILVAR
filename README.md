@@ -1,9 +1,9 @@
-# TAILVAR (Terminal codon Analysis and Improved prediction for Lengthened VARiants)
-😊 Welcome to the **TAILVAR** repository! This repository stores the codebase for developing the TAILVAR score designed to assess the functional impact of **stop-lost variants** occurring at stop codons (TAA, TGA, TAG) 🚀
+# TAILVAR (Terminal codon Analysis and Improved prediction of Lengthened VARiants)
+😊 Welcome to the **TAILVAR** repository! This repository stores the codebase for developing the TAILVAR score designed to assess the functional impact of **stop-loss variants** occurring at stop codons (TAA, TGA, TAG) 🚀
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-lost variants**. By integrating a combination of in-silico prediction scores, transcript features, and protein context information, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript features, and protein context information, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic.
 ![TAILVAR overview](images/TAILVAR_performance.jpg)
 
 ## Key components
@@ -36,4 +36,4 @@ Datasets including **TAILVAR** scores for all possible single nucleotide substit
 # Citation
 If you use **TAILVAR** in your research, please cite:
 
-JG Yoon. *Integrating transcript and protein contexts to improve the pathogenicity prediction for stop-lost variants.*
+JG Yoon. *Integrating transcriptomic and protein features to improve the pathogenicity prediction of stop-loss variants.*
