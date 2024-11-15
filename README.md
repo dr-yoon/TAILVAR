@@ -35,7 +35,7 @@
 Datasets including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
 
 # Annotation
-**TAILVAR** scores can be annotated in VEP using this command,
+To annotate **TAILVAR** scores in VEP, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
