@@ -32,7 +32,7 @@
   - **Hydrophobicity**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,W,V) in the extended tail
 
 # Annotation
-To annotate **TAILVAR** scores in VEP, use the following command:
+To annotate **TAILVAR** scores in **[VEP](https://github.com/Ensembl/ensembl-vep)**, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
