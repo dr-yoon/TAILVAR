@@ -150,7 +150,7 @@ plot6
 ggsave("extension_length_TAILVAR_relationship.svg", plot = plot6, width = 6, height = 4)
 
 # AUC-ROC plots
-comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
+comp_scores <- c("CADD", "DANN", "FATHMM", "Eigen", "BayesDel_addAF", "BayesDel_noAF", "integrated_fitCons", "GERP", "phyloP100way", "phastCons100way")
 comparators <- c(all_of(comp_scores),"TAILVAR")
 AUROC_data <- train_data
 AUROC_data$Class <- ifelse(AUROC_data$Class == "P", 1, 0)
