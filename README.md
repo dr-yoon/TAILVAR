@@ -3,7 +3,7 @@
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript features, and protein context information, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic. The threshold of >0.92 can be used to identify pathogenic or leikely pathogenic variants.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript features, and protein context of C-terminal extensions information, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic. The threshold of >= 0.92 can be used to identify pathogenic or likely pathogenic variants.
 ![TAILVAR overview](images/TAILVAR_performance.jpg)
 
 ## Key components
@@ -27,9 +27,9 @@
   - **UTR3_length**: Length of the 3' UTR
 
 - **Protein contexts**:
-  - **TailAA_counts**: Total counts of amino acids in the extended tail
-  - **Amino acids counts**: Counts of each of the 20 amino acids in the extended tail
-  - **Hydrophobicity**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,W,V) in the extended tail
+  - **Extension_lengths**: Total counts of amino acids in the C-terminal extension
+  - **Amino acids counts**: Counts of each of the 20 amino acids in the C-terminal extension
+  - **Hydrophobicity (H) index**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,V) in the C-terminal extension
 
 # Annotation
 To annotate **TAILVAR** scores in **[VEP](https://github.com/Ensembl/ensembl-vep)**, use the following command:
@@ -43,4 +43,4 @@ Datasets including **TAILVAR** scores for all possible single nucleotide substit
 # Citation
 If you use **TAILVAR** in your research, please cite:
 
-JG Yoon. *Integrating transcriptomic and protein features to improve the pathogenicity prediction of stop-loss variants.*
+JG Yoon. *Advancing pathogenicity prediction of stop-loss variants by incorporating transcript and protein features of C-terminal extensions.*
