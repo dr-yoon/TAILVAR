@@ -7,13 +7,13 @@ library(reshape2)
 library(ggbreak)
 
 # Load pre-processed datasets for model development and validation
-train_data <- read_tsv("HGMD_gnomAD_train_data.txt")        # Model training set
-test_data <- read_tsv("ClinVar_ALFA_test_data.txt")  # Model testing set
-stoplost_all <- read_tsv("stoplost_SNV_prediction_data.txt") # Dataset for predicting TAILVAR score on all stoplost variants
+train_data <- read_tsv("Train_data_input.txt")        # Model training set
+test_data <- read_tsv("Test_data_input.txt")  # Model testing set
+stoploss_all <- read_tsv("stoploss_SNV_input.txt") # Dataset for predicting TAILVAR score on all stoploss variants
 
 # Define feature groups for model input
 comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
-gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "TailAA_counts")
+gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "Extension_lengths")
 amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "Hydrophobicity")
 
 # Prepare the input data for Random Forest model development
@@ -24,6 +24,7 @@ train_data <- train_data %>%
 # Set up cross-validation for model training
 set.seed(123)  # Set seed for reproducibility
 train_control <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = twoClassSummary)
+options(digits = 10)
 
 # Define grid of hyper-parameters to tune (mtry, ntree)
 tune_grid <- expand.grid(mtry = c(2, 5, 10, 15, 20))  # Different values of mtry (number of variables considered at each split)
@@ -65,7 +66,7 @@ ggplot(results, aes(x = ntree, y = ROC, color = factor(mtry))) +
 dev.off()
 
 # Select the best AUROC combination of mtry, ntree, maxnodes
-selected_params <- c(10, 40, 20)
+selected_params <- c(10, 100, 30)
 cat("Selected mtry:", selected_params[1], "ntree:", selected_params[2], "maxnode:", selected_params[3],"\n")
 
 # Train the final Random Forest model using the selected hyper-parameters
@@ -75,12 +76,14 @@ final_rf_model <- randomForest(Class ~ ., data = train_data,
 # Predict TAILVAR scores for all datasets using the final model
 train_data$TAILVAR <- predict(final_rf_model, train_data, type = "prob")[, "P"]
 test_data$TAILVAR <- predict(final_rf_model, test_data, type = "prob")[, "P"]
-stoplost_all$TAILVAR <- predict(final_rf_model, stoplost_all, type = "prob")[, "P"]
+stoploss_all$TAILVAR <- predict(final_rf_model, stoploss_all, type = "prob")[, "P"]
+stoploss_all_vcf <- stoploss_all %>% select(Chromosome, Position, REF_ALLELE, Allele, TAILVAR)
 
 # Save the TAILVAR scores to output files
 write.table(train_data, "Training_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(test_data, "Testing_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(stoplost_all, "stoplost_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(stoploss_all, "stoploss_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(stoploss_all_vcf, "TAILVAR_score_vcf_input.txt", col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE)
 
 # Calculate the correlation matrix for the selected parameters
 correlation_matrix <- cor(train_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature)), method = "spearman", use = "complete.obs")
@@ -99,14 +102,13 @@ dev.off()
 variable_importance <- importance(final_rf_model, type = 2)
 importance_df <- data.frame(Variable = rownames(variable_importance), Importance = variable_importance[, "MeanDecreaseGini"])
 importance_df <- importance_df %>% mutate(RelativeImportance = Importance / sum(Importance) * 100) %>%
-  arrange(desc(RelativeImportance)) %>%  slice_head(n = 15)
+  arrange(desc(RelativeImportance)) %>%  slice_head(n = 20)
 
 # Plot the normalized importance scores
-svg("Parameter_Importance.svg", width = 8, height = 4)
+svg("Feature_Importance.svg", width = 9, height = 6)
 importance_df %>% arrange(desc(RelativeImportance)) %>%
   ggplot(aes(x = reorder(Variable, RelativeImportance, decreasing = TRUE), y = RelativeImportance)) +
-  geom_bar(stat = "identity", fill = "navy") + geom_text(aes(label = round(RelativeImportance, 1)), vjust = 1.5, size = 3.5, color = "white") +
-  labs(x = "Parameters", y = "Relative importance (%)") +
-  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_y_break(c(10, 35)) +
-  scale_y_continuous(expand = c(0, 0))
+  geom_bar(stat = "identity", fill = "#228B22") + geom_text(aes(label = round(RelativeImportance, 1)), vjust = 1.5, size = 3.5, color = "black") +
+  labs(x = "", y = "Relative importance (%)") +
+  theme_classic() + theme(axis.title.y = element_text(size = 18), axis.text.x = element_text(size = 14, angle = -45, hjust = 0)) + scale_y_break(c(10, 30))
 dev.off()
