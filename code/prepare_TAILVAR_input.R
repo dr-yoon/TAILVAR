@@ -29,7 +29,6 @@ stoploss_clinvar <- stoploss_clinvar %>% filter(Consequence %in% c("stop_lost"))
   )
 stoploss_clinvar <- left_join(stoploss_clinvar, transcript_info, by = c("Feature")) %>% distinct()
 stoploss_clinvar <- stoploss_clinvar %>% mutate(Extension_seq = paste0(Amino_acids, Extension_seq)) %>% filter(is.na(Extension_lengths) == FALSE)
-write.table(stoploss_clinvar, "Test_clinvar_input.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 
 stoploss_HGMD <- read_tsv("stoploss_HGMD_filtered.txt")
 stoploss_HGMD <- stoploss_HGMD %>% mutate(Class = "P")
