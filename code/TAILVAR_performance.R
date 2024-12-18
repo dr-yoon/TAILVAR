@@ -6,8 +6,8 @@ library(svglite)
 library(mclust)
 
 # Load pre-processed data
-train_data <- read_tsv("Training_TAILVAR_score.txt")
-test_data <- read_tsv("Testing_TAILVAR_score.txt")
+train_data <- read_tsv("Train_TAILVAR_score.txt")
+test_data <- read_tsv("Test_TAILVAR_score.txt")
 stoploss_all <- read_tsv("stoploss_SNV_TAILVAR_score.txt")
 stoploss_gnomAD <- stoploss_all %>% filter(gnomAD_exomes_POPMAX_AF > 0 | gnomAD_genomes_POPMAX_AF > 0)
 
