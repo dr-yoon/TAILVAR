@@ -80,8 +80,8 @@ stoploss_all$TAILVAR <- predict(final_rf_model, stoploss_all, type = "prob")[, "
 stoploss_all_vcf <- stoploss_all %>% select(Chromosome, Position, REF_ALLELE, Allele, TAILVAR)
 
 # Save the TAILVAR scores to output files
-write.table(train_data, "Training_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(test_data, "Testing_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(train_data, "Train_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(test_data, "Test_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoploss_all, "stoploss_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoploss_all_vcf, "TAILVAR_score_vcf_input.txt", col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE)
 
