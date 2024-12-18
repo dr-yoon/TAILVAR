@@ -63,7 +63,7 @@ test_data <- test_data %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydr
 stoploss_all <- stoploss_all %>% mutate(Hydrophobicity = rowSums(select(., all_of(hydrophobic_aa)))/Extension_lengths)
 
 # Define features and target
-comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
+comp_scores <- c("CADD", "DANN", "FATHMM", "Eigen", "BayesDel_addAF", "BayesDel_noAF", "integrated_fitCons", "GERP", "phyloP100way", "phastCons100way")
 gene_feature <- c("Gene_GC", "UTR3_length", "UTR3_GC", "Extension_lengths")
 
 # Impute missing values with the median (for numeric data)
