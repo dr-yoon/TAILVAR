@@ -9,7 +9,7 @@ cd "${WORK_DIR}"
 Rscript extract_ensembl_data.R
 
 # Step 2: Generate a VCF file with saturated mutations at stop codons
-FILE_NAME="stoplost_SNV"
+FILE_NAME="stoploss_SNV"
 MUTA_SITES="${FILE_NAME}.txt"
 VCF_FILE="${FILE_NAME}.vcf"
 HEADER="vcf_header.txt"
