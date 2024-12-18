@@ -146,4 +146,4 @@ vcf_data <- bind_rows(lapply(vcf_data_list, function(df) {
 
 # Write the final summary table and vcf_data to files
 write.table(transcript_info, "mane_transcripts_info.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(vcf_data, "stoplost_SNV.tsv", row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE)
+write.table(vcf_data, "stoploss_SNV.tsv", row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE)
