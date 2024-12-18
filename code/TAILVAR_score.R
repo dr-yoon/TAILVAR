@@ -12,7 +12,7 @@ test_data <- read_tsv("Test_data_input.txt")  # Model testing set
 stoploss_all <- read_tsv("stoploss_SNV_input.txt") # Dataset for predicting TAILVAR score on all stoploss variants
 
 # Define feature groups for model input
-comp_scores <- c("CADD", "DANN", "FATHMM", "EIGEN", "BayesDel_addAF", "BayesDel_noAF", "int_fitCons", "GERP", "phyloP100way", "phastCons100way")
+comp_scores <- c("CADD", "DANN", "FATHMM", "Eigen", "BayesDel_addAF", "BayesDel_noAF", "integrated_fitCons", "GERP", "phyloP100way", "phastCons100way")
 gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "Extension_lengths")
 amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "Hydrophobicity")
 
