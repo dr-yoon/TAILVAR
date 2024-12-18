@@ -35,8 +35,8 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 - **`Stoploss_SNV_input.txt`**: Input data for TAILVAR score prediction of all possible stoploss variants.
 
 #### Output Files
-- **`Training_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
-- **`Testing_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
+- **`Train_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
+- **`Test_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
 - **`stoploss_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoploss variants.
 - **`Hyperparameters.svg`**
 - **`Correlation_plot.svg`**
@@ -47,11 +47,11 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 This R script generates plots for performance comparisons with TAILVAR score.
 
 #### Required Packages
-- `tidyverse`, `pROC`, `ggplot2`, `svglite`
+- `tidyverse`, `pROC`, `ggplot2`, `svglite`,`mclust`
 
 #### Input Files
-- **`Training_TAILVAR_score.txt`**: Calculated TAILVAR scores for training dataset.
-- **`Testing_TAILVAR_score.txt`**: Calculated TAILVAR scores for testing dataset.
+- **`Train_TAILVAR_score.txt`**: Calculated TAILVAR scores for training dataset.
+- **`Test_TAILVAR_score.txt`**: Calculated TAILVAR scores for testing dataset.
 - **`stoploss_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoploss variants.
 
 #### Output Files
