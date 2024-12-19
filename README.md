@@ -38,7 +38,7 @@ To annotate **TAILVAR** scores in **[VEP](https://github.com/Ensembl/ensembl-vep
 ```
 
 # Download
-The annotated dataset including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/13846886).
+The annotated dataset including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/14512203).
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
