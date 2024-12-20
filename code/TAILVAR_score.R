@@ -15,10 +15,15 @@ stoploss_all <- read_tsv("stoploss_SNV_input.txt") # Dataset for predicting TAIL
 comp_scores <- c("CADD", "DANN", "FATHMM", "Eigen", "BayesDel_addAF", "BayesDel_noAF", "integrated_fitCons", "GERP", "phyloP100way", "phastCons100way")
 gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "Extension_lengths")
 amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "Hydrophobicity")
+amino_acid_columns_rename <- c("Ala", "Cys", "Asp", "Glu", "Phe", "Gly", "His", "Ile", "Lys", "Leu", "Met", "Asn", "Pro", "Gln", "Arg", "Ser", "Thr", "Val", "Trp", "Tyr", "H_index")
+
+train_data <- train_data %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
+test_data <- test_data %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
+stoploss_all <- stoploss_all %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
 
 # Prepare the input data for Random Forest model development
 train_data <- train_data %>% 
-  dplyr::select("Class", all_of(comp_scores), all_of(gene_feature), all_of(amino_acid_columns)) %>% 
+  dplyr::select("Class", all_of(comp_scores), all_of(gene_feature), all_of(amino_acid_columns_rename)) %>% 
   mutate(Class = factor(Class, levels = c("B", "P")))  # Ensure the target variable is a factor with correct levels
 
 # Set up cross-validation for model training
@@ -77,14 +82,16 @@ final_rf_model <- randomForest(Class ~ ., data = train_data,
 train_data$TAILVAR <- predict(final_rf_model, train_data, type = "prob")[, "P"]
 test_data$TAILVAR <- predict(final_rf_model, test_data, type = "prob")[, "P"]
 stoploss_all$TAILVAR <- predict(final_rf_model, stoploss_all, type = "prob")[, "P"]
+stoploss_all_vcf <- stoploss_all %>% select(Chromosome, Position, REF_ALLELE, Allele, TAILVAR)
 
 # Save the TAILVAR scores to output files
 write.table(train_data, "Train_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(test_data, "Test_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(stoploss_all, "stoploss_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(stoploss_all_vcf, "TAILVAR_score_vcf_input.txt", col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE)
 
 # Calculate the correlation matrix for the selected parameters
-correlation_matrix <- cor(train_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature)), method = "spearman", use = "complete.obs")
+correlation_matrix <- cor(train_data %>% dplyr::select(all_of(comp_scores),all_of(gene_feature),all_of(gene_feature),"H_index"), method = "spearman", use = "complete.obs")
 print(correlation_matrix)
 correlation_melt <- melt(correlation_matrix)
 
@@ -94,7 +101,6 @@ svg("Correlation_plot.svg", width = 8, height = 8)
 corrplot(correlation_matrix, method = "circle", type = "upper", col = col(100), 
          tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7, mar = c(0, 0, 1, 0))
 dev.off()
-
 
 # Extract variable importance using Gini index
 variable_importance <- importance(final_rf_model, type = 2)
