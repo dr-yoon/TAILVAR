@@ -23,7 +23,7 @@ with st.sidebar:
     - Supports `.vcf` or `.txt` formats
     - Results include TAILVAR scores and classifications
     """)
-    st.markdown("[🔗 GitHub Repository](https://github.com/dr-toon/TAILVAR)")
+    st.markdown("[🔗 GitHub Repository](https://github.com/dr-yoon/TAILVAR)")
     st.markdown("Contact: YOONJH@yuhs.ac")
 
 # Upload file
@@ -45,11 +45,11 @@ if uploaded_file:
     # Analysis (not functional yet)
     if st.button("🚀 Get TAILVAR score"):
         st.info("📡 Running analysis... (to be implemented)")
-        # 이후 분석 연동: subprocess로 bash script 호출
+        # analysis: call analysis script after
 
 else:
     st.warning("⬆️ Please upload a file to begin.")
 
 # Footer
 st.markdown("---")
-st.caption("Developed by Jihoon Yoon, M.D., Ph.D. | Powered by Streamlit")
+st.caption("Developed by Jihoon G. Yoon, M.D., Ph.D. | Powered by Streamlit")
