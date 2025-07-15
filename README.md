@@ -36,10 +36,12 @@
   - **[CANYA](https://github.com/lehner-lab/canya)**: aggregation properties of the C-terminal peptide predicted by CANYA   
 
 # Annotation
-To annotate **TAILVAR** scores in **[VEP](https://github.com/Ensembl/ensembl-vep)**, use the following command:
+Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
+To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-vep)** in Custom Annotation mode, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
+for more details visit the **VEP(https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**
 
 # Download
 The annotated dataset including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/14512203).
