@@ -46,17 +46,6 @@ hydro_scale <- function(df) {
 data_input <- hydro_scale(data_input) %>% mutate(Var_ID = paste0(SYMBOL,"_",HGVSp))
 
 # Save peptide sequence input
-deeploc_data <- data_input %>% dplyr::select("SYMBOL", "protein_sequence", "Var_ID", "extension_peptide") %>% distinct()
-deeploc_data <- deeploc_data %>% mutate(WT = gsub("\\*$", "", protein_sequence), MT = paste0(WT,extension_peptide))
-fasta_deeploc <- apply(deeploc_data, 1, function(row) {
-  wt_header <- paste0(">", row["SYMBOL"], "_WT")
-  mt_header <- paste0(">", row["Var_ID"])
-  wt_seq <- row["WT"]
-  mt_seq <- row["MT"]
-  paste(c(wt_header, wt_seq, mt_header, mt_seq), collapse = "\n")
-})
-writeLines(fasta_deeploc, paste0(file_name,".deeploc.fasta"))
-
 seq_data <- data_input %>% dplyr::select("Var_ID","extension_peptide") %>% distinct()
 write.table(seq_data, paste0(file_name,"_seq_input.txt"), col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE)
 
