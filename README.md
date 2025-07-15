@@ -22,7 +22,7 @@
 - **Transcript features**:
   - **3'UTR_GC**: GC content of the 3' UTR
   - **3'UTR_length**: Length of the 3' UTR
-  - **[pLI]([http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way](https://gnomad.broadinstitute.org/data#v4-constraint)/)**: probablity score of loss-of-function (LOF) intolerance from gnomAD
+  - **[pLI](https://gnomad.broadinstitute.org/data#v4-constraint)**: probablity score of loss-of-function (LOF) intolerance from gnomAD
   - **[LOEUF](https://gnomad.broadinstitute.org/data#v4-constraint)**: upper boundary fraction of observed/expected LOF variants from gnomAD
   - **[mRNA stability](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02811-x)**: Z-scores of Saluki dataset
 
