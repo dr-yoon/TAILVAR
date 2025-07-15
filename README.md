@@ -37,10 +37,11 @@
 
 # Annotation
 Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
-To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-vep)** in Custom Annotation mode, use the following command （for more details visit **[VEP](https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**）:
+To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-vep)** in Custom Annotation mode, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
+For more details, visit **[VEP](https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**）
 
 # Download
 The datasets、 including training and test sets of **TAILVAR** with annotations and pre-computed scores for all possible single nucleotide substitutions and indels、 are available for download [here](https://zenodo.org/records/14512203).
