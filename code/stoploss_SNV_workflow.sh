@@ -26,7 +26,7 @@ $3 == "stop_codon" && $9 ~ /tag "MANE_Select"/ {
 
 # Step 2: Generate a VCF file with all-possible SNVs at stop codons
 VCF_BODY="${FILE_NAME}.tsv"
-Rscript extract_vcf_info.R ${VCF_BODY}
+Rscript extract_transcript_info.R ${VCF_BODY}
 
 tr -d '\r' < "${VCF_BODY}" | \
 awk '{print $1, $2, ".", $3, $4, ".", ".", "."}' OFS="\t" >> ${FILE_NAME}_tmp.txt
