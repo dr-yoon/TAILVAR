@@ -5,7 +5,7 @@
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript, and protein features of C-terminal extensions, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of pathogenic potential. The threshold of >= 0.70 can be used to identify pathogenic or likely pathogenic variants.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript, and protein features of C-terminal extensions, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of pathogenic potential. TAILVAR score cutoffs ≥ 0.70 and ≤ 0.30 can be used to distinguish potential pathogenic or benign variants.
 
 ![TAILVAR overview](images/TAILVAR_performance.jpg)
 
@@ -47,4 +47,4 @@ The annotated dataset including **TAILVAR** scores for all possible single nucle
 # Citation
 If you use **TAILVAR** in your research, please cite:
 
-JG Yoon. *Advancing pathogenicity prediction of stop-loss variants by incorporating transcript and protein features of C-terminal extensions.*
+JG Yoon. *A predictive framework for stop-loss variants with C-terminal extensions.*
