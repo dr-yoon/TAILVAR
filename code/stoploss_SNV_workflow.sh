@@ -6,7 +6,7 @@ WORK_DIR="/path_to/TAILVAR"
 cd "${WORK_DIR}"
 
 # Step 1: Extract stop codon positions from GENCODE
-GENCODE="gencode.v47.annotation.gtf.gz"
+GENCODE="gencode.v47.annotation.gtf.gz" # Path to GENCODE annotation file
 FILE_NAME="stoploss_SNV"
 VCF_FILE="${FILE_NAME}.vcf"
 HEADER="vcf_header.txt"
