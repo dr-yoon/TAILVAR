@@ -41,10 +41,10 @@ To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-
 ```bash
 ./vep [...] --custom file=TAILVAR_score.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
-for more details visit the **VEP(https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**
+for more details visit **[VEP](https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**
 
 # Download
-The annotated dataset including **TAILVAR** scores for all possible single nucleotide substitutions are available for download [here](https://zenodo.org/records/14512203).
+The datasets including training and test sets of **TAILVAR** with annotations and pre-computed scores for all possible single nucleotide substitutions and indels are available for download [here](https://zenodo.org/records/14512203).
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
