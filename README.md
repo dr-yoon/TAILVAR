@@ -5,18 +5,14 @@
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
 
 # Overview
-**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript, and protein features of C-terminal extensions, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of a variant being pathogenic. The threshold of >= 0.92 can be used to identify pathogenic or likely pathogenic variants.
+**TAILVAR** is built using a Random Forest model that predicts the pathogenicity of **stop-loss variants**. By integrating a combination of in-silico prediction scores, transcript, and protein features of C-terminal extensions, **TAILVAR** provides a score ranging from 0 to 1, indicating the probability of pathogenic potential. The threshold of >= 0.70 can be used to identify pathogenic or likely pathogenic variants.
+
 ![TAILVAR overview](images/TAILVAR_performance.jpg)
 
-## Key components
+## Key components (integration of 36 features)
 
-- **Functional prediction scores**:
+- **Variant effect prediction tool**:
   - **[CADD](http://cadd.gs.washington.edu/)** (Combined Annotation Dependent Depletion)
-  - **[DANN](https://cbcl.ics.uci.edu/public_data/DANN/)** (Deleterious Annotation of genetic variants using Neural Networks)
-  - **[FATHMM](http://fathmm.biocompute.org.uk/fathmmMKL.htm)** (Functional Analysis through Hidden Markov Models)
-  - **[Eigen](http://www.columbia.edu/~ii2135/eigen.html)**
-  - **[BayesDel_addAF, BayesDel_noAF](https://fenglab.chpc.utah.edu/BayesDel/BayesDel.html)** (Bayesian Deleteriousness score with/without allele frequency)
-  - **[integrated_fitCons](https://www.nature.com/articles/ng.3196)** (Integrated Fitness Consequence Score)
 
 - **Conservation scores**:
   - **[GERP](http://mendel.stanford.edu/SidowLab/downloads/gerp/)** (Genomic Evolutionary Rate Profiling)
@@ -24,14 +20,20 @@
   - **[phastCons100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/)** (Phylogenetic Conserved Elements across 100 vertebrates)
 
 - **Transcript features**:
-  - **Gene_GC**: GC content of the gene
-  - **UTR3_GC**: GC content of the 3' UTR
-  - **UTR3_length**: Length of the 3' UTR
+  - **3'UTR_GC**: GC content of the 3' UTR
+  - **3'UTR_length**: Length of the 3' UTR
+  - **[pLI]([http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way](https://gnomad.broadinstitute.org/data#v4-constraint)/)**: probablity score of loss-of-function (LOF) intolerance from gnomAD
+  - **[LOEUF](https://gnomad.broadinstitute.org/data#v4-constraint)**: upper boundary fraction of observed/expected LOF variants from gnomAD
+  - **[mRNA stability](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02811-x)**: Z-scores of Saluki dataset
 
-- **Protein contexts**:
-  - **Extension_lengths**: Total counts of amino acids in the C-terminal extension
+- **Protein features**:
+  - **Protein_lengths**: Total counts of amino acids in the original protein
+  - **C-terminal_lengths**: Total counts of amino acids in the C-terminal extension
   - **Amino acids counts**: Counts of each of the 20 amino acids in the C-terminal extension
-  - **Hydrophobicity (H) index**: Proportions of hydrophobic amino acids (A,C,I,L,M,F,V) in the C-terminal extension
+  - **Hydrophobicity_KD**: Mean hydrophobicity of the C-terminal extension in Kyte–Doolittle (KD) scales
+  - **Hydrophobicity_MJ**: Mean hydrophobicity of the C-terminal extension in Miyazawa–Jernigan (MJ) scales
+  - **[TANGO](https://tango.crg.es/)**: aggregation properties of the C-terminal peptide predicted by TANGO
+  - **[CANYA](https://github.com/lehner-lab/canya)**: aggregation properties of the C-terminal peptide predicted by CANYA   
 
 # Annotation
 To annotate **TAILVAR** scores in **[VEP](https://github.com/Ensembl/ensembl-vep)**, use the following command:
