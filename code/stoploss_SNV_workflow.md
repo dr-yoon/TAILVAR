@@ -4,9 +4,11 @@ This repository provides a pipeline for extracting, annotating, and filtering va
 
 ## Pipeline Overview
 
-### Step 1: Extract Variants and Information from the Ensembl Database
-#### Script: `extract_ensembl_data.R`
-This R script extracts data from the Ensembl database, focusing on stop-lost variants and associated transcript information.
+### Step 1: Extract Stop Codon Information from the **[GENCODE] https://www.gencodegenes.org/)** 
+
+### Step 2: Generate a VCF file with all-possible SNVs at stop codons
+#### Script: `extract_transcript_info.R`
+This R script extracts data from the Ensembl database, converting stop codon positions to a vcf file and translate 3'UTR sequences into the C-terminal extensions.
 
 #### Required packages:
 To run this script, you need to have the following R packages installed:
@@ -14,10 +16,7 @@ To run this script, you need to have the following R packages installed:
 
 #### Output Files:
 - **`mane_transcripts_info.txt`**: Information on stop codons for all MANE select transcripts retrieved from the Ensembl database.
-- **`stoploss_SNV.txt`**: A list of all possible single-nucleotide substitutions at stop codons, including chromosome, position, reference, and alternative sequences.
-
-### Step 2: Generate a VCF File
-The **`stoploss_SNV.txt`** file generated in Step 1 is converted to VCF format, resulting in the **`stoploss_SNV.vcf`** file.
+- **`stoploss_SNV.tsv`**: A list of all possible single-nucleotide substitutions at stop codons, including chromosome, position, reference, and alternative sequences.
 
 ### Step 3: Annotate the VCF File Using VEP (Variant Effect Predictor)
 The **`stoploss_SNV.vcf`** file is annotated using VEP to add additional information about the variants.
@@ -28,18 +27,34 @@ To run the VEP annotation, you need the following tools and data files:
 - **[VEP (Variant Effect Predictor)](https://github.com/Ensembl/ensembl-vep)**
 - **VEP Plugins and Database Files**: should be downloaded and placed appropriately
   - [dbNSFP](https://sites.google.com/site/jpopgen/dbNSFP)
+  - [GPN_MSA](https://huggingface.co/datasets/songlab/gpn-msa-hg38-scores)
   - [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/)
+  - [gnomAD](https://gnomad.broadinstitute.org/data#v4)
   - Reference genome file (hg38)
 
 #### Output Files:
 - **`stoploss_SNV_anno.txt`**: Annotated VCF file with variant information.
 
-### Step 4: Filter Annotated Variants
+### Step 4: Filter and preprocess annotated variants
 #### Script: `filter_variants.R`
 This R script filters out unnecessary columns and formats the annotated file to retain only relevant information.
 
 #### Output Files:
 - **`stoploss_SNV_filtered.txt`**: The final filtered and formatted variant list.
+
+#### Script: `TAILVAR_preprocess.R`
+This R script further add required information and formats the file to retain only required field for machine learning.
+
+#### Output Files:
+- **`stoploss_SNV_preprocessed.txt`**: The preprocessed input file for machine learning model.
+
+### Step 5: Predict aggregation properties using TANGO and CANYA
+#### Script: `run_aggregation.sh`
+This script execute to run TANGO and CANYA for C-terminal peptides to predict the aggregation properties.
+
+Academic License should be obtained for [TANGO](https://tango.crg.es/)
+Conda environment should be install for [CANYA](https://github.com/lehner-lab/canya)
+
 
 ## How to Run the Pipeline
 
