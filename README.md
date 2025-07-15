@@ -44,7 +44,7 @@ To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-
 For more details, visit **[VEP](https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**）
 
 # Download
-The datasets、 including training and test sets of **TAILVAR** with annotations and pre-computed scores for all possible single nucleotide substitutions and indels、 are available for download [here](https://zenodo.org/records/14512203).
+The datasets, including training and test sets of **TAILVAR** with annotations and pre-computed scores for all possible single nucleotide substitutions and indels, are available for download [here](https://zenodo.org/records/14512203).
 
 # Citation
 If you use **TAILVAR** in your research, please cite:
