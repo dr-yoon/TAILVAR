@@ -60,15 +60,16 @@ Conda environment should be install for [CANYA](https://github.com/lehner-lab/ca
 
 1. Clone this repository or download the scripts.
 2. Ensure all required R packages, tools, and data files are installed on your system.
-3. Update the paths in the Bash script (`stoploss_SNV_annotation.sh`) to match your directory structure.
+3. Update the paths in the Bash script (`stoploss_SNV_workflow.sh`) to match your directory structure.
 4. Run the pipeline by executing the Bash script:
 
    ```bash
-   ./stoploss_SNV_annotation.sh
+   ./stoploss_SNV_workflow.sh
 
 #### Output Summary
 - **`mane_transcripts_info.txt`**: Stop codon information for MANE select transcripts.
-- **`stoploss_SNV.txt`**: All possible SNVs at stop codons.
+- **`stoploss_SNV.tsv`**: All possible SNVs at stop codons.
 - **`stoploss_SNV.vcf`**: VCF file containing SNVs.
-- **`stoploss_SNV_anno.txt`**: Annotated VCF file.
-- **`stoploss_SNV_filtered.txt`**: Final filtered variant list.
+- **`stoploss_SNV_anno.txt`**: Annotated file.
+- **`stoploss_SNV_filtered.txt`**: filtered variant annotation file.
+- **`stoploss_SNV_preprocessed.txt`**: Final preprocessed input for TAILVAR model.
