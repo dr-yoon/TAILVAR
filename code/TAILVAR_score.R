@@ -38,6 +38,9 @@ RME_data <- RME_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic
 
 test_data  <- bind_rows(Clinvar_data, RME_data) %>% distinct()  # Model testing set
 
+write.table(train_data, "Train_data_input.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(test_data, "Test_data_input.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+
 # Dataset for predicting TAILVAR score on all stoploss SNVs
 SNV_data    <- read_tsv("stoploss_SNV_preprocessed.txt")
 SNV_tango   <- read_tsv("stoploss_SNV_TANGO_score.tsv")
