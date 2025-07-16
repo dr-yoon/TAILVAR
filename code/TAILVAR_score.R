@@ -30,9 +30,9 @@ Clinvar_canya   <- read_tsv("stoploss_Clinvar_CANYA_score.tsv")
 Clinvar_data <- Clinvar_data %>% left_join(Clinvar_tango, by = c("Var_ID" = "Variant")) %>% left_join(Clinvar_canya, by = c("Var_ID" = "seqid"))
 Clinvar_data <- Clinvar_data %>% filter(Class %in% c("B/LB", "P/LP"))
 
-RME_data   <- read_tsv("stoploss_RME_0.001_preprocessed.txt") %>% mutate(Class = "B/LB")
-RME_tango   <- read_tsv("stoploss_RME_0.001_TANGO_score.tsv")
-RME_canya   <- read_tsv("stoploss_RME_0.001_CANYA_score.tsv")
+RME_data   <- read_tsv("stoploss_RME_preprocessed.txt") %>% mutate(Class = "B/LB")
+RME_tango   <- read_tsv("stoploss_RME_TANGO_score.tsv")
+RME_canya   <- read_tsv("stoploss_RME_CANYA_score.tsv")
 RME_data <- RME_data %>% left_join(RME_tango, by = c("Var_ID" = "Variant")) %>% left_join(RME_canya, by = c("Var_ID" = "seqid"))
 RME_data <- RME_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
 
