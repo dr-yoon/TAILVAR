@@ -1,10 +1,8 @@
-# TAILVAR Score: Model Development and Validation
-
-This repository provides an overview of the scripts used for the development and validation of the TAILVAR score, a tool for predicting the pathogenicity of stoploss variants.
+# TAILVAR: Model Development and Assessment
 
 ## Overview
 
-### Step 1: Prepare Input Files
+### Training set
 #### Script: `prepare_TAILVAR_input.R`
 This R script is responsible for combining and formatting data necessary for downstream analysis in the TAILVAR score pipeline.
 
