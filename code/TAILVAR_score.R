@@ -7,19 +7,47 @@ library(reshape2)
 library(ggbreak)
 
 # Load pre-processed datasets for model development and validation
-train_data <- read_tsv("Train_data_input.txt")        # Model training set
-test_data <- read_tsv("Test_data_input.txt")  # Model testing set
-stoploss_all <- read_tsv("stoploss_SNV_input.txt") # Dataset for predicting TAILVAR score on all stoploss variants
+HGMD_data   <- read_tsv("stoploss_HGMD_preprocessed.txt") %>% mutate(Class = "P/LP")
+HGMD_tango   <- read_tsv("stoploss_HGMD_TANGO_score.tsv")
+HGMD_canya   <- read_tsv("stoploss_HGMD_CANYA_score.tsv")
+HGMD_data <- HGMD_data %>% left_join(HGMD_tango, by = c("Var_ID" = "Variant")) %>% left_join(HGMD_canya, by = c("Var_ID" = "seqid"))
+
+gnomad_data   <- read_tsv("stoploss_gnomad_0.001_preprocessed.txt") %>% mutate(Class = "B/LB")
+gnomad_tango   <- read_tsv("stoploss_gnomad_0.001_TANGO_score.tsv")
+gnomad_canya   <- read_tsv("stoploss_gnomad_0.001_CANYA_score.tsv")
+gnomad_data <- gnomad_data %>% left_join(gnomad_tango, by = c("Var_ID" = "Variant")) %>% left_join(gnomad_canya, by = c("Var_ID" = "seqid"))
+gnomad_data <- gnomad_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
+
+train_data <- bind_rows(HGMD_data, gnomad_data) %>% distinct() # Model training set
+
+Clinvar_data <- read_tsv("stoploss_Clinvar_preprocessed.txt")
+Clinvar_data <- Clinvar_data %>% filter(Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic",
+                                                       "Uncertain_significance", "Benign", "Likely_benign", "Benign/Likely_benign")) %>%
+  mutate(Class = case_when(str_detect(Clinvar, regex("athogenic", ignore_case = TRUE)) ~ "P/LP",
+                           str_detect(Clinvar, regex("ncertain",  ignore_case = TRUE)) ~ "VUS", str_detect(Clinvar, regex("enign", ignore_case = TRUE)) ~ "B/LB", TRUE ~ Clinvar))
+Clinvar_tango   <- read_tsv("stoploss_Clinvar_TANGO_score.tsv")
+Clinvar_canya   <- read_tsv("stoploss_Clinvar_CANYA_score.tsv")
+Clinvar_data <- Clinvar_data %>% left_join(Clinvar_tango, by = c("Var_ID" = "Variant")) %>% left_join(Clinvar_canya, by = c("Var_ID" = "seqid"))
+Clinvar_data <- Clinvar_data %>% filter(Class %in% c("B/LB", "P/LP"))
+
+RME_data   <- read_tsv("stoploss_RME_0.001_preprocessed.txt") %>% mutate(Class = "B/LB")
+RME_tango   <- read_tsv("stoploss_RME_0.001_TANGO_score.tsv")
+RME_canya   <- read_tsv("stoploss_RME_0.001_CANYA_score.tsv")
+RME_data <- RME_data %>% left_join(RME_tango, by = c("Var_ID" = "Variant")) %>% left_join(RME_canya, by = c("Var_ID" = "seqid"))
+RME_data <- RME_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
+
+test_data  <- bind_rows(Clinvar_data, RME_data) %>% distinct()  # Model testing set
+
+# Dataset for predicting TAILVAR score on all stoploss SNVs
+SNV_data    <- read_tsv("stoploss_SNV_preprocessed.txt")
+SNV_tango   <- read_tsv("stoploss_SNV_TANGO_score.tsv")
+SNV_canya   <- read_tsv("stoploss_SNV_CANYA_score.tsv")
+SNV_data <- SNV_data %>% left_join(SNV_tango, by = c("Var_ID" = "Variant")) %>% left_join(SNV_canya, by = c("Var_ID" = "seqid"))
 
 # Define feature groups for model input
-comp_scores <- c("CADD", "DANN", "FATHMM", "Eigen", "BayesDel_addAF", "BayesDel_noAF", "integrated_fitCons", "GERP", "phyloP100way", "phastCons100way")
-gene_feature <- c("Gene_GC", "UTR3_GC", "UTR3_length", "Extension_lengths")
-amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "Hydrophobicity")
-amino_acid_columns_rename <- c("Ala", "Cys", "Asp", "Glu", "Phe", "Gly", "His", "Ile", "Lys", "Leu", "Met", "Asn", "Pro", "Gln", "Arg", "Ser", "Thr", "Val", "Trp", "Tyr", "H_index")
+Numeric_variables <- c("CADD", "GERP", "phyloP100", "phastCons100", "pLI", "LOEUF", "UTR3_length", "UTR3_GC", "protein_length", "extended_length", "hydro_KD", "hydro_MJ","mRNA_stability", "TANGO", "CANYA")
+amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
 
-train_data <- train_data %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
-test_data <- test_data %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
-stoploss_all <- stoploss_all %>% rename_at(vars(amino_acid_columns), ~ amino_acid_columns_rename)
 
 # Prepare the input data for Random Forest model development
 train_data <- train_data %>% 
