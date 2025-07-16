@@ -12,9 +12,9 @@ HGMD_tango   <- read_tsv("stoploss_HGMD_TANGO_score.tsv")
 HGMD_canya   <- read_tsv("stoploss_HGMD_CANYA_score.tsv")
 HGMD_data <- HGMD_data %>% left_join(HGMD_tango, by = c("Var_ID" = "Variant")) %>% left_join(HGMD_canya, by = c("Var_ID" = "seqid"))
 
-gnomad_data   <- read_tsv("stoploss_gnomad_0.001_preprocessed.txt") %>% mutate(Class = "B/LB")
-gnomad_tango   <- read_tsv("stoploss_gnomad_0.001_TANGO_score.tsv")
-gnomad_canya   <- read_tsv("stoploss_gnomad_0.001_CANYA_score.tsv")
+gnomad_data   <- read_tsv("stoploss_gnomad_preprocessed.txt") %>% mutate(Class = "B/LB")
+gnomad_tango   <- read_tsv("stoploss_gnomad_TANGO_score.tsv")
+gnomad_canya   <- read_tsv("stoploss_gnomad_CANYA_score.tsv")
 gnomad_data <- gnomad_data %>% left_join(gnomad_tango, by = c("Var_ID" = "Variant")) %>% left_join(gnomad_canya, by = c("Var_ID" = "seqid"))
 gnomad_data <- gnomad_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
 
