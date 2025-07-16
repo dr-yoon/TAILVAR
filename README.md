@@ -12,12 +12,12 @@
 ## Key components (integration of 36 features)
 
 - **Variant effect prediction tool**:
-  - **[CADD](http://cadd.gs.washington.edu/)** (Combined Annotation Dependent Depletion)
+  - **[CADD](http://cadd.gs.washington.edu/)**: Combined Annotation Dependent Depletion
 
 - **Conservation scores**:
-  - **[GERP](http://mendel.stanford.edu/SidowLab/downloads/gerp/)** (Genomic Evolutionary Rate Profiling)
-  - **[phyloP100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/)** (Phylogenetic P-value across 100 vertebrates)
-  - **[phastCons100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/)** (Phylogenetic Conserved Elements across 100 vertebrates)
+  - **[GERP](http://mendel.stanford.edu/SidowLab/downloads/gerp/)**: Genomic Evolutionary Rate Profiling
+  - **[phyloP100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/)**: Phylogenetic P-value across 100 vertebrates
+  - **[phastCons100way](http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/)**: Phylogenetic Conserved Elements across 100 vertebrates
 
 - **Transcript features**:
   - **3'UTR_GC**: GC content of the 3' UTR
