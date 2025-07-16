@@ -33,7 +33,8 @@
   - **Hydrophobicity_KD**: Mean hydrophobicity of the C-terminal extension in Kyte–Doolittle (KD) scales
   - **Hydrophobicity_MJ**: Mean hydrophobicity of the C-terminal extension in Miyazawa–Jernigan (MJ) scales
   - **[TANGO](https://tango.crg.es/)**: aggregation properties of the C-terminal peptide predicted by TANGO
-  - **[CANYA](https://github.com/lehner-lab/canya)**: aggregation properties of the C-terminal peptide predicted by CANYA   
+  - **[CANYA](https://github.com/lehner-lab/canya)**: aggregation properties of the C-terminal peptide predicted by CANYA
+  - **[Intrinsically Disordered Proteins (IDPs)](https://disprot.org/)**: manually curated IDPs database    
 
 # Annotation
 Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
