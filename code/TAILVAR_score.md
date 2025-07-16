@@ -4,11 +4,11 @@
 
 ### Training set
 - **`P/LP'**: HGMD 'DM' category
-- **`B/LB'**: gnomAD AF > 0.1% or homozygous allele
+- **`B/LB'**: [gnomAD](https://gnomad.broadinstitute.org/) AF > 0.1% or homozygous allele
 
 ### Test set
 - **`P/LP'**: ClinVar 'P/LP' category
-- **`B/LB'**: AF > 0.1% in public databases (ALFA, Regeneron Million Exome, AllofUs Genome)
+- **`B/LB'**: AF > 0.1% in public databases ([ALFA](https://www.ncbi.nlm.nih.gov/snp/docs/gsr/alfa/), [Regeneron Million Exome](https://rgc-research.regeneron.com/), [AllofUs Genome](https://support.researchallofus.org/))
 
 #### Input Files
 - **`Preprocessed data`**: Preprocessed annotation files.
