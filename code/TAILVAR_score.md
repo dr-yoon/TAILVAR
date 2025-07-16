@@ -29,3 +29,10 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 - **`Train_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
 - **`Test_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
 - **`stoploss_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoploss variants.
+
+### Model Performance Evaluation: AUROC plots
+#### Script: `TAILVAR_performance.R`
+This R script asess the established Random Forest model using AUROC values.
+
+#### Required Packages
+- `tidyverse`, `pROC`, `ggplot2`
