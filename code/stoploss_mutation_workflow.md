@@ -11,6 +11,7 @@ This repository provides a pipeline for extracting, annotating, and filtering va
 ### Step 2: Generate a VCF file with all-possible mutations at stop codons
 #### Script: `stop_codon_positions.R`
 This R script extracts information on stop codon positions from MANE transcripts.
+
 #### Required packages:
 To run this script, you need to have the following R packages installed:
 - `tidyverse`
@@ -51,6 +52,10 @@ This R script filters out unnecessary columns and formats the annotated file to 
 
 #### Script: `TAILVAR_preprocess.R`
 This R script will add required information (protein information on translated C-terminal extensions) and formats the file to retain only required field for machine learning.
+
+#### Required packages:
+To run this script, you need to have the following R packages installed:
+- `tidyverse`,'biomaRt','stringr','Biostrings','Peptides'
 
 #### Output Files: The preprocessed input file for machine learning model.
 - **`stoploss_SNV_preprocessed.txt`**
