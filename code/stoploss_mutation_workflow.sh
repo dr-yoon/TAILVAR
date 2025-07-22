@@ -7,9 +7,10 @@ cd "${WORK_DIR}"
 
 # Step 1: Extract stop codon positions from GENCODE
 GENCODE="gencode.v47.annotation.gtf.gz" # Path to GENCODE annotation file
-FILE_NAME="stoploss_SNV"
+FILE_NAME="stoploss_SNV" # or "stoploss_DEL" / "stoploss_INS", change this by variant_type
 VCF_FILE="${FILE_NAME}.vcf"
 HEADER="vcf_header.txt"
+var_type="SNV" # or "DEL" / "INS", change this by variant_type
 
 awk -F '\t' '
 BEGIN {
@@ -25,13 +26,53 @@ $3 == "stop_codon" && $9 ~ /tag "MANE_Select"/ {
 ' <(zcat "$GENCODE") > MANE_stop_codon_info.tsv
 
 # Step 2: Generate a VCF file with all-possible SNVs at stop codons
-VCF_BODY="${FILE_NAME}.tsv"
-Rscript extract_transcript_info.R ${VCF_BODY}
+Rscript stop_codon_positions.R ${file_name}
 
-tr -d '\r' < "${VCF_BODY}" | \
-awk '{print $1, $2, ".", $3, $4, ".", ".", "."}' OFS="\t" >> ${FILE_NAME}_tmp.txt
-cat "${HEADER}" "${FILE_NAME}_tmp.txt" > "${VCF_FILE}"
-rm -f "${FILE_NAME}_tmp.txt"
+awk -F'\t' '{print $1":"$2"-"$2"\t"$0}' ${file_name}.tsv | \
+while read region chr pos; do
+    base=$(samtools faidx ${REF} $region | tail -n +2 | tr -d '\n')
+    echo -e "${chr}\t${pos}\t${base}"
+done > ${file_name}_ref.tsv
+
+case "$var_type" in
+    "SNV"|"DEL"|"INS")
+        ;;
+    *)
+        echo "Warning: unknown var_type '$var_type'. Defaulting to SNV."
+        var_type="SNV"
+        ;;
+esac
+
+> ${file_name}_body.txt
+if [[ "$var_type" == "SNV" ]]; then
+    while IFS=$'\t' read -r chrom pos ref; do
+        for alt in A C G T; do
+            if [[ "$alt" != "$ref" ]]; then
+                echo -e "${chrom}\t${pos}\t.\t${ref}\t${alt}\t.\t.\t." >> ${file_name}_body.txt
+            fi
+        done
+    done < ${file_name}_ref.tsv
+
+elif [[ "$var_type" == "DEL" ]]; then
+    while IFS=$'\t' read -r chrom pos ref; do
+        next_pos=$((pos + 1))
+        region2="${chrom}:${next_pos}-${next_pos}"
+        base2=$(samtools faidx ${REF} $region2 | tail -n +2 | tr -d '\n')
+        if [[ "$ref" =~ ^[ACGT]$ && "$base2" =~ ^[ACGT]$ ]]; then
+            echo -e "${chrom}\t${pos}\t.\t${ref}${base2}\t${base2}\t.\t.\t." >> ${file_name}_body.txt
+        fi
+    done < ${file_name}_ref.tsv
+
+elif [[ "$var_type" == "INS" ]]; then
+    while IFS=$'\t' read -r chrom pos ref; do
+        for ins in A C G T; do
+            echo -e "${chrom}\t${pos}\t.\t${ref}\t${ins}${ref}\t.\t.\t." >> ${file_name}_body.txt
+        done
+    done < ${file_name}_ref.tsv
+fi
+
+cat $header ${file_name}_body.txt > $vcf_file
+rm -rf ${file_name}.tsv ${file_name}_ref.tsv ${file_name}_body.txt
 
 # Step 3: Annotate the VCF file using VEP (Variant Effect Predictor)
 SING_IMAGE="/path_to/ensembl-vep_latest.sif"  # Path to VEP Singularity image
