@@ -55,7 +55,7 @@ This R script will add required information (protein information on translated C
 
 #### Required packages:
 To run this script, you need to have the following R packages installed:
-- `tidyverse`,'biomaRt','stringr','Biostrings','Peptides'
+- `tidyverse`,`biomaRt`,`stringr`,`Biostrings`,`Peptides`
 
 #### Output Files: The preprocessed input file for machine learning model.
 - **`stoploss_SNV_preprocessed.txt`**
