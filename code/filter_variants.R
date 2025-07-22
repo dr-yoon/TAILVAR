@@ -10,7 +10,7 @@ transcript_info <- read_tsv("mane_transcripts_info.txt")
 
 # Filter and process the dataset
 names(dataset)[1] <- "Upload_variation"
-dataset <- dataset %>% filter(Feature %in% transcript_info$ensembl_transcript_id, Codons != "-", str_detect(as.character(Consequence), "stop_lost"), !str_detect(as.character(Consequence), "frame")) %>%
+dataset <- dataset %>% filter(Feature %in% transcript_info$ensembl_transcript_id, Codons != "-", str_detect(as.character(Consequence), "stop_lost")) %>%
   distinct() %>%  mutate(HGVSc = str_extract(HGVSc, "(?<=:).*"), HGVSp = str_extract(HGVSp, "(?<=:).*"), HGVSp = gsub("%3D", "=", HGVSp), Amino_acids = str_extract(Amino_acids, "(?<=/).*"), extended_length = str_extract(HGVSp, "(?<=fsTer|extTer)(\\d+|\\?)")) %>%
   separate(Codons, into = c("Codons_REF", "Codons_ALT"), sep = "\\/") %>% separate(Location, into = c("Chromosome", "Position"), sep = ":")
 
