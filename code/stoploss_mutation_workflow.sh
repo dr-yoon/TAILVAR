@@ -6,7 +6,7 @@ WORK_DIR="/path_to/TAILVAR"
 cd "${WORK_DIR}"
 
 # Step 1: Extract stop codon positions from GENCODE
-GENCODE="gencode.v47.annotation.gtf.gz" # Path to GENCODE annotation file
+GENCODE="gencode.v48.annotation.gtf.gz" # Path to GENCODE annotation file
 FILE_NAME="stoploss_SNV" # or "stoploss_DEL" / "stoploss_INS", change this by variant_type
 VCF_FILE="${FILE_NAME}.vcf"
 HEADER="vcf_header.txt"
@@ -25,7 +25,7 @@ $3 == "stop_codon" && $9 ~ /tag "MANE_Select"/ {
 }
 ' <(zcat "$GENCODE") > MANE_stop_codon_info.tsv
 
-# Step 2: Generate a VCF file with all-possible SNVs at stop codons
+# Step 2: Generate a VCF file with all-possible mutations at stop codons
 Rscript stop_codon_positions.R ${file_name}
 
 awk -F'\t' '{print $1":"$2"-"$2"\t"$0}' ${file_name}.tsv | \
@@ -79,9 +79,9 @@ SING_IMAGE="/path_to/ensembl-vep_latest.sif"  # Path to VEP Singularity image
 VEP_DATA="/path_to/vep_data"                  # Path to VEP data directory
 REF_GENOME="/path_to/Homo_sapiens_assembly38.fasta"  # Path to reference genome (hg38)
 DBNSFP4_DB="${VEP_DATA}/plugins/dbNSFP4.9a_grch38.gz"     # Path to dbNSFP 4.9a database
-DBNSFP5_DB="${VEP_DATA}/plugins/dbNSFP5.1a_grch38.gz"     # Path to dbNSFP 5.1a database
+DBNSFP5_DB="${VEP_DATA}/plugins/dbNSFP5.2a_grch38.gz"     # Path to dbNSFP 5.2a database
 GPN_MSA_DB="/path_to/GPN_MSA_scores.vcf.gz" # Path to GPN_MSA score database
-CLINVAR_DB="/path_to/clinvar_20250623.vcf.gz" # Path to ClinVar database
+CLINVAR_DB="/path_to/clinvar_20250721.vcf.gz" # Path to ClinVar database
 gnomAD_DB="/path_to/gnomad.joint.v4.1.sites.vcf.gz" # Path to gnomAD v4.1 database
 
 # Annotation command using VEP
