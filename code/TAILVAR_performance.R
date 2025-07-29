@@ -7,9 +7,8 @@ library(mclust)
 # Load pre-processed data
 train_data <- read_tsv("Train_TAILVAR_score.txt")
 test_data <- read_tsv("Test_TAILVAR_score.txt")
-SNV_data <- read_tsv("stoploss_SNV_TAILVAR_score.txt")
 
-# Compute ROC curve and AUROC for the train dataset
+# Compute ROC curve and AUROC for the training dataset
 rf_roc_curve <- roc(train_data$Class, train_data$TAILVAR, levels = c("B_LB", "P_LP"))
 rf_auroc <- auc(rf_roc_curve)
 cat("AUROC of the Random Forest model on the training set:", rf_auroc, "\n")
