@@ -13,6 +13,7 @@ MANE_transcripts <- read_tsv("MANE_stop_codon_info.tsv") %>% mutate(ensembl_tran
 data_input <- read_tsv(paste0(file_name,"_filtered.txt"))
 
 gnomad <- read_tsv("gnomad.v4.1.constraint_metrics.tsv") %>% dplyr::select(transcript, lof.pLI, lof.oe_ci.upper)
+genebayes <- read_tsv("s_het_estimates.genebayes.tsv") %>% dplyr::select(ensg, post_mean)
 saluki <- read_tsv("Saluki_data.txt") %>% dplyr::select(gene_id, Saluki)
 IDP_data <- read_tsv("DisProt_Human_IDP_info.txt")
 
@@ -25,7 +26,7 @@ data_input <- data_input %>% mutate(IDP = if_else(Uniprot %in% IDP_data$acc, 1, 
 #transcript_coding <- getBM(attributes = c("ensembl_transcript_id", "coding"), filters = "ensembl_transcript_id", values = MANE_transcripts$ensembl_transcript_id, mart = ensembl)
 #transcript_3utr <- getBM(attributes = c("ensembl_transcript_id", "3_utr_start", "3_utr_end", "strand", "3utr"), filters = "ensembl_transcript_id", values = MANE_transcripts$ensembl_transcript_id, mart = ensembl)
 
-# Read pre-downloaded data: since querying the Ensembl database can be time-consuming, we use pre-downloaded data files
+# Read pre-downloaded data: since querying the Ensembl database can be time-consuming, we use pre-downloaded data files. This step can be skipped if the data was obtained directly from the biomaRt
 transcript_coding <- read_tsv("MANE_transcripts_coding.txt") %>% dplyr::select("ensembl_transcript_id", "coding") %>%
                   mutate(protein_length = nchar(coding)/3 - 1, stop_codons = substr(coding, nchar(coding)-2, nchar(coding))) %>% filter(stop_codons %in% c("TGA", "TAA", "TAG"))
 transcript_3utr <- read_tsv("MANE_transcripts_3utr.txt") %>% dplyr::select("ensembl_transcript_id", "3utr") %>% dplyr::rename(sequence_3utr = `3utr`) %>% filter(sequence_3utr != "Sequence unavailable")
@@ -33,6 +34,7 @@ transcript_3utr <- transcript_3utr %>% mutate(UTR3_length = str_length(sequence_
        
 data_input <- inner_join(data_input, transcript_coding, by = c("Feature" = "ensembl_transcript_id"))
 data_input <- inner_join(data_input, transcript_3utr, by = c("Feature" = "ensembl_transcript_id"))
+data_input <- data_input %>% filter(!is.na(extended_length) & extended_length != "?")
 
 # Function to translate C-terminal pepetide sequences
 translate_sequence <- function(seq) {
@@ -65,19 +67,19 @@ hydro_scale <- function(df) {
     ) %>% ungroup()
 }
 
-data_input <- hydro_scale(data_input) %>% mutate(Var_ID = paste0(SYMBOL,"_",HGVSp))
+data_input <- hydro_scale(data_input) %>% mutate(Var_ID = paste0(SYMBOL,"_",str_remove(HGVSp, "^p\\.")))
 
 # Save peptide sequence input
-seq_data <- data_input %>% dplyr::select("Var_ID","extension_peptide") %>% distinct()
+seq_data <- data_input %>% filter(SYMBOL != "-") %>% dplyr::select("Var_ID","extension_peptide") %>% distinct()
 write.table(seq_data, paste0(file_name,"_seq_input.txt"), col.names = FALSE, row.names = FALSE, sep = "\t", quote = FALSE)
 
 # Define features and target
 Pop_AF <-c("RegeneronME_ALL_AF","AllofUs_POPMAX_AF","ALFA_Total_AF","gnomAD4.1_AF_joint")
 comp_scores <- c("CADD", "DANN", "Eigen_PC", "BayesDel_noAF","BayesDel_addAF","FATHMM_MKL","fitCons_int", "MutationTaster","VEST4","GPN_MSA", "GERP", "phyloP100", "phastCons100")
 
-Model_variables  <- c("Upload_variation", "Feature", "SYMBOL", "HGVSc", "HGVSp", "pLI", "LOEUF", all_of(Pop_AF), all_of(comp_scores),
+Model_variables  <- c("Upload_variation", "Feature", "SYMBOL", "HGVSc", "HGVSp", "pLI", "LOEUF", "sHet", all_of(Pop_AF), all_of(comp_scores),
                       "Clinvar", "UTR3_length", "UTR3_GC", "protein_length", "extended_length", "extension_peptide", "stop_codons", "next_stop_codon",
-                      all_of(amino_acid_columns), "Amino_acids", "hydro_KD", "hydro_MJ","Uniprot", "mRNA_stability","IDP","Var_ID")
+                      all_of(amino_acid_columns), "Amino_acids", "hydro_KD", "hydro_MJ", "Uniprot", "mRNA_stability", "IDP", "Var_ID")
 
 preprocessed_data <- data_input %>% dplyr::select(all_of(Model_variables))
 
