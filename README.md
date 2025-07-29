@@ -1,5 +1,5 @@
 # TAILVAR (Terminal codon Analysis and Improved prediction of Lengthened VARiants)
-Welcome to the **TAILVAR** repository! This repository stores the codes for developing the TAILVAR score designed to assess the functional impact of **stop-loss variants** occurring at stop codons (TAA, TGA, TAG) 🚀
+Welcome to the **TAILVAR** repository! This repository stores the codes for developing the TAILVAR score designed to assess the functional impact of **stop-loss variants** with C-terminal extensions occurring at stop codons (TAA, TGA, TAG) 🚀
 
 
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
