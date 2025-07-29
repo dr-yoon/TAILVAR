@@ -28,7 +28,9 @@ This R script builds a Random Forest model to predict the pathogenicity of stopl
 #### Output Files
 - **`Train_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model development dataset.
 - **`Test_TAILVAR_score.txt`**: Calculated TAILVAR scores for the model validation dataset.
-- **`stoploss_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible stoploss variants.
+- **`stoploss_SNV_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible single-nucleotide substitutions.
+- **`stoploss_DEL_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible single-nucleotide deletions.
+- **`stoploss_INS_TAILVAR_score.txt`**: Calculated TAILVAR scores for all possible single-nucleotide insertions.
 
 ### Model Performance Evaluation: AUROC plots
 #### Script: `TAILVAR_performance.R`
