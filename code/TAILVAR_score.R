@@ -7,6 +7,10 @@ library(reshape2)
 library(ggbreak)
 
 # Load pre-processed datasets for model development and validation
+args = commandArgs(trailingOnly=TRUE)
+file_name=args[1] # Name of the input data e.g. "stoploss_SNV" / "stoploss_DEL" / "stoploss_INS"
+
+# Model training set
 HGMD_data   <- read_tsv("stoploss_HGMD_preprocessed.txt") %>% mutate(Class = "P/LP")
 HGMD_tango   <- read_tsv("stoploss_HGMD_TANGO_score.tsv")
 HGMD_canya   <- read_tsv("stoploss_HGMD_CANYA_score.tsv")
@@ -18,8 +22,9 @@ gnomad_canya   <- read_tsv("stoploss_gnomad_CANYA_score.tsv")
 gnomad_data <- gnomad_data %>% left_join(gnomad_tango, by = c("Var_ID" = "Variant")) %>% left_join(gnomad_canya, by = c("Var_ID" = "seqid"))
 gnomad_data <- gnomad_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
 
-train_data <- bind_rows(HGMD_data, gnomad_data) %>% distinct() # Model training set
+train_data <- bind_rows(HGMD_data, gnomad_data) %>% distinct()
 
+# Model test set
 Clinvar_data <- read_tsv("stoploss_Clinvar_preprocessed.txt")
 Clinvar_data <- Clinvar_data %>% filter(Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic",
                                                        "Uncertain_significance", "Benign", "Likely_benign", "Benign/Likely_benign")) %>%
@@ -28,7 +33,8 @@ Clinvar_data <- Clinvar_data %>% filter(Clinvar %in% c("Pathogenic", "Likely_pat
 Clinvar_tango   <- read_tsv("stoploss_Clinvar_TANGO_score.tsv")
 Clinvar_canya   <- read_tsv("stoploss_Clinvar_CANYA_score.tsv")
 Clinvar_data <- Clinvar_data %>% left_join(Clinvar_tango, by = c("Var_ID" = "Variant")) %>% left_join(Clinvar_canya, by = c("Var_ID" = "seqid"))
-Clinvar_data <- Clinvar_data %>% filter(Class %in% c("B/LB", "P/LP"))
+Clinvar_P_LP <- Clinvar_data %>% filter(Class %in% c("P/LP"))
+Clinvar_B_LB <- Clinvar_data %>% filter(Class %in% c("B/LB"))
 
 RME_data   <- read_tsv("stoploss_RME_preprocessed.txt") %>% mutate(Class = "B/LB")
 RME_tango   <- read_tsv("stoploss_RME_TANGO_score.tsv")
@@ -36,19 +42,20 @@ RME_canya   <- read_tsv("stoploss_RME_CANYA_score.tsv")
 RME_data <- RME_data %>% left_join(RME_tango, by = c("Var_ID" = "Variant")) %>% left_join(RME_canya, by = c("Var_ID" = "seqid"))
 RME_data <- RME_data %>% filter(!Clinvar %in% c("Pathogenic", "Likely_pathogenic", "Pathogenic/Likely_pathogenic", "Conflicting_classifications_of_pathogenicity"))
 
-test_data  <- bind_rows(Clinvar_data, RME_data) %>% distinct()  # Model testing set
+test_data  <- bind_rows(Clinvar_P_LP, Clinvar_B_LB, RME_data) %>% distinct()
 
 write.table(train_data, "Train_data_input.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(test_data, "Test_data_input.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 
-# Dataset for predicting TAILVAR score on all stoploss SNVs
-SNV_data    <- read_tsv("stoploss_SNV_preprocessed.txt")
-SNV_tango   <- read_tsv("stoploss_SNV_TANGO_score.tsv")
-SNV_canya   <- read_tsv("stoploss_SNV_CANYA_score.tsv")
-SNV_data <- SNV_data %>% left_join(SNV_tango, by = c("Var_ID" = "Variant")) %>% left_join(SNV_canya, by = c("Var_ID" = "seqid"))
+# Evaluation dataset for TAILVAR score calculation
+eval_data    <- read_tsv(paste0(file_name,"_preprocessed.txt"))
+eval_tango   <- read_tsv(paste0(file_name,"_TANGO_score.tsv"))
+eval_canya   <- read_tsv(paste0(file_name,"_CANYA_score.tsv"))
+eval_data <- eval_data %>% left_join(eval_tango, by = c("Var_ID" = "Variant")) %>% left_join(eval_canya, by = c("Var_ID" = "seqid"))
+
 
 # Define feature groups for model input
-Numeric_variables <- c("CADD", "GERP", "phyloP100", "phastCons100", "pLI", "LOEUF", "UTR3_length", "UTR3_GC", "protein_length", "extended_length", "hydro_KD", "hydro_MJ","mRNA_stability", "TANGO", "CANYA")
+Numeric_variables <- c("CADD", "GERP", "phyloP100", "phastCons100", "pLI", "LOEUF", "sHet", "UTR3_length", "UTR3_GC", "protein_length", "extended_length", "hydro_KD", "hydro_MJ", "mRNA_stability", "TANGO", "CANYA")
 amino_acid_columns <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
 
 # Impute missing values with the median (for numeric data)
@@ -63,7 +70,7 @@ impute_median <- function(df, vars) {
 
 train_data <- impute_median(train_data, Numeric_variables)
 test_data <- impute_median(test_data, Numeric_variables)
-SNV_data <- impute_median(SNV_data, Numeric_variables)
+eval_data <- impute_median(eval_data, Numeric_variables)
 
 # Prepare the dataset
 train_data <- train_data %>% filter(Class %in% c("B/LB", "P/LP")) %>% mutate(Class = recode(Class, "B/LB" = "B_LB", "P/LP" = "P_LP"), Class = factor(Class, levels = c("B_LB", "P_LP")))
@@ -74,9 +81,10 @@ comp_scores <- c("CADD", "DANN", "Eigen_PC", "BayesDel_noAF", "BayesDel_addAF", 
 
 train_data <- impute_median(train_data, comp_scores)
 test_data <- impute_median(test_data, comp_scores)
-SNV_data <- impute_median(SNV_data, comp_scores)
+eval_data <- impute_median(eval_data, comp_scores)
 
-# Random Forest model development
+
+# TAILVAR model (Random Forest) development
 set.seed(123)
 model_train <- train_data %>% dplyr::select(all_of(Model_variables), -Upload_variation)
 train_control <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = twoClassSummary)
@@ -109,18 +117,24 @@ for (maxnodes in maxnodes_values) {
   }
 }
 
-# Select the best AUROC combination of mtry, ntree, maxnodes
-selected_params <- c(20, 100, 30)
+ggplot(results, aes(x = ntree, y = ROC, color = factor(mtry))) +
+  geom_line(size = 1.2) + geom_point(size = 3) +
+  labs(title = "Hyper-parameter (mtry, ntree, maxnodes) optimization",
+       x = "Number of Trees (ntree)", y = "AUROC", color = "mtry") +
+  facet_wrap(~ maxnodes) + theme_minimal() + theme(legend.position = "right")
+
+# Select the best AUROC combination of mtry, ntree, maxnodes from the above plot
+selected_params <- c(20, 200, 30)
 cat("Selected mtry:", selected_params[1], "ntree:", selected_params[2], "maxnode:", selected_params[3],"\n")
 
 # Train the final Random Forest model using the selected hyper-parameters
 final_rf_model <- randomForest(Class ~ ., data = model_train, mtry = selected_params[1], ntree = selected_params[2], maxnodes = selected_params[3])
 
-# Predict TAILVAR scores for all datasets using the final model
+# Calculate TAILVAR scores for all datasets using the final model
 train_data$TAILVAR <- predict(final_rf_model, train_data, type = "prob")[, "P_LP"]
 test_data$TAILVAR <- predict(final_rf_model, test_data, type = "prob")[, "P_LP"]
-SNV_data$TAILVAR <- predict(final_rf_model, SNV_data, type = "prob")[, "P_LP"]
+eval_data$TAILVAR <- predict(final_rf_model, eval_data, type = "prob")[, "P_LP"]
 
 write.table(train_data, "Train_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
 write.table(test_data, "Test_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
-write.table(SNV_data, "stoploss_SNV_TAILVAR_score.txt", row.names = FALSE, sep = "\t", quote = FALSE)
+write.table(eval_data, paste0(file_name,"_TAILVAR_score.txt"), row.names = FALSE, sep = "\t", quote = FALSE)
