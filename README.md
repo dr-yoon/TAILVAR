@@ -1,5 +1,5 @@
 # TAILVAR (Terminal codon Analysis and Improved prediction of Lengthened VARiants)
-😊 Welcome to the **TAILVAR** repository! This repository stores the codes for developing the TAILVAR score designed to assess the functional impact of **stop-loss variants** occurring at stop codons (TAA, TGA, TAG) 🚀
+Welcome to the **TAILVAR** repository! This repository stores the codes for developing the TAILVAR score designed to assess the functional impact of **stop-loss variants** occurring at stop codons (TAA, TGA, TAG) 🚀
 
 
 ![TAILVAR overview](images/TAILVAR_overview.jpg)
@@ -9,7 +9,7 @@
 
 ![TAILVAR overview](images/TAILVAR_performance.jpg)
 
-## Key components (integration of 36 features)
+## Key components (integration of 37 features)
 
 - **Variant effect prediction tool**:
   - **[CADD](http://cadd.gs.washington.edu/)**: Combined Annotation Dependent Depletion
@@ -22,9 +22,10 @@
 - **Transcript features**:
   - **3'UTR_GC**: GC content of the 3' UTR
   - **3'UTR_length**: Length of the 3' UTR
+  - **[mRNA stability](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02811-x)**: Z-scores of Saluki dataset
   - **[pLI](https://gnomad.broadinstitute.org/data#v4-constraint)**: probablity score of loss-of-function (LOF) intolerance from gnomAD
   - **[LOEUF](https://gnomad.broadinstitute.org/data#v4-constraint)**: upper boundary fraction of observed/expected LOF variants from gnomAD
-  - **[mRNA stability](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-022-02811-x)**: Z-scores of Saluki dataset
+  - **[s_het](https://github.com/tkzeng/GeneBayes)**: Bayesian estimation of gene constraint metrics
 
 - **Protein features**:
   - **Protein_lengths**: Total counts of amino acids in the original protein
