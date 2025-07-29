@@ -35,10 +35,10 @@ dataset <- dataset %>%
   mutate(across(all_of(comp_scores), ~as.numeric(.)))
 dataset$Uniprot <- sub("\\..*", "", dataset$SWISSPROT)
 
-cols_remove <- c("Feature_type", "Existing_variation", "IMPACT", "DISTANCE", "FLAGS","VARIANT_CLASS", "SYMBOL_SOURCE", "HGNC_ID", "MANE_PLUS_CLINICAL","TREMBL", "UNIPARC", "SWISSPROT","UNIPROT_ISOFORM", "INTRON", "HGVS_OFFSET", "ClinVar", "GPN_MSA","gnomAD4.1")
+cols_remove <- c("Feature_type", "Existing_variation", "IMPACT", "DISTANCE", "FLAGS", "SYMBOL_SOURCE", "HGNC_ID", "MANE_PLUS_CLINICAL", "TREMBL", "UNIPARC", "SWISSPROT","UNIPROT_ISOFORM", "INTRON", "HGVS_OFFSET", "ClinVar", "GPN_MSA", "gnomAD4.1")
 dataset <- dataset %>% select(-any_of(cols_remove)) %>% arrange(Chromosome)
 
-comp_scores_rename <- c("CADD", "DANN", "Eigen_PC", "BayesDel_noAF","BayesDel_addAF", "FATHMM_MKL","fitCons_int", "MutationTaster","VEST4","GPN_MSA","GERP", "phyloP100", "phastCons100")
+comp_scores_rename <- c("CADD", "DANN", "Eigen_PC", "BayesDel_noAF", "BayesDel_addAF", "FATHMM_MKL", "fitCons_int", "MutationTaster", "VEST4", "GPN_MSA", "GERP", "phyloP100", "phastCons100")
 dataset <- dataset %>% rename_at(vars(comp_scores), ~ comp_scores_rename)
 
 # Write the filtered dataset to a file
