@@ -52,3 +52,5 @@ The datasets, including training and test sets of **TAILVAR** with annotations a
 If you use **TAILVAR** in your research, please cite:
 
 Yoon et al. *A predictive framework for stop-loss variants with C-terminal extensions.*
+
+https://doi.org/10.1101/2025.09.01.673407
