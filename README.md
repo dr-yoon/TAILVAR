@@ -35,7 +35,7 @@ Welcome to the **TAILVAR** repository! This repository stores the codes for deve
   - **Hydrophobicity_MJ**: Mean hydrophobicity of the C-terminal extension in Miyazawa–Jernigan (MJ) scales
   - **[TANGO](https://tango.crg.es/)**: aggregation properties of the C-terminal peptide predicted by TANGO
   - **[CANYA](https://github.com/lehner-lab/canya)**: aggregation properties of the C-terminal peptide predicted by CANYA
-  - **[Intrinsically Disordered Proteins (IDPs)](https://disprot.org/)**: manually curated IDPs database    
+  - **[Intrinsically Disordered Proteins (IDPs)](https://disprot.org/)**: manually curated IDPs database by DisProt database   
 
 # Annotation
 Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
