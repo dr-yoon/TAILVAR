@@ -41,7 +41,8 @@ Welcome to the **TAILVAR** repository! This repository stores the codes for deve
 Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
 To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-vep)** in Custom Annotation mode, use the following command:
 ```bash
-./vep [...] --custom file=TAILVAR_score_1bp_all.hg38.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=TAILVAR
+./vep [...] --custom file=TAILVAR_score_SNV.hg38.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
+./vep [...] --custom file=TAILVAR_score_INDEL.hg38.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
 ```
 For more details, visit **[VEP](https://asia.ensembl.org/info/docs/tools/vep/script/vep_custom.html)**
 
