@@ -38,7 +38,7 @@ Welcome to the **TAILVAR** repository! This repository stores the codes for deve
   - **[Intrinsically Disordered Proteins (IDPs)](https://disprot.org/)**: manually curated IDPs database by DisProt database   
 
 # Annotation
-Yon can download pre-computed **TAILVAR** scores provided in the vcf file below.
+You can download pre-computed **TAILVAR** scores provided in the vcf file below.
 To annotate **TAILVAR** scores using **[VEP](https://github.com/Ensembl/ensembl-vep)** in Custom Annotation mode, use the following command:
 ```bash
 ./vep [...] --custom file=TAILVAR_score_SNV.hg38.vcf.gz,short_name=TAILVAR,format=vcf,type=exact,fields=score
